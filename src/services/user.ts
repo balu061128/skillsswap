@@ -1,6 +1,7 @@
+
 "use server";
 
-import { auth, db, createUserWithEmailAndPassword, doc, setDoc } from "@/lib/firebase";
+import { auth, db, createUserWithEmailAndPassword, doc, setDoc, getDoc } from "@/lib/firebase";
 
 // This is a server action. It will only run on the server.
 export async function createUser(email: string, password: string, name: string) {
@@ -27,4 +28,21 @@ export async function createUser(email: string, password: string, name: string) 
     // We throw the error so the client component can catch it and show a message.
     throw new Error(error.message || "An unexpected error occurred during signup.");
   }
+}
+
+export async function getUserProfile(uid: string) {
+    try {
+        const userDocRef = doc(db, "users", uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+            return { id: userDoc.id, ...userDoc.data() };
+        } else {
+            console.log("No such document!");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error getting user profile:", error);
+        throw new Error("Failed to get user profile.");
+    }
 }
