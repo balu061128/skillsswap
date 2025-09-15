@@ -31,7 +31,7 @@ export async function createUser(email: string, password: string, name: string) 
   }
 }
 
-export async function getUserProfile(uid: string) {
+export async function getUserProfile(uid: string): Promise<User | null> {
     if (!uid) {
         return null;
     }
@@ -40,14 +40,15 @@ export async function getUserProfile(uid: string) {
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
-            return { id: userDoc.id, ...userDoc.data() };
+            // Explicitly cast to User type for type safety
+            return { id: userDoc.id, ...userDoc.data() } as User;
         } else {
-            console.log("No such document for uid:", uid);
+            console.warn(`No such document for uid: ${uid}`);
             return null;
         }
     } catch (error) {
-        console.error("Error getting user profile for uid:", uid, error);
-        // Return null instead of throwing an error to prevent crashes
+        console.error(`Error getting user profile for uid: ${uid}`, error);
+        // Do not throw an error, let the UI handle the null case
         return null;
     }
 }

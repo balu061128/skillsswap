@@ -20,24 +20,27 @@ export function ProfileClient({ userId, isCurrentUser }: { userId: string, isCur
   useEffect(() => {
     async function fetchUser() {
       if (!userId) {
-        setLoading(false);
+        // This case should be handled by the parent component now, but as a safeguard:
         setError("No user ID provided.");
+        setLoading(false);
         return;
       }
+      
       setLoading(true);
       setError(null);
       try {
         const userProfile = await getUserProfile(userId);
         if (userProfile) {
-          setUser(userProfile as User);
+          setUser(userProfile);
         } else {
           setError("Could not find user profile.");
         }
       } catch (err) {
-        setError("Failed to fetch user data.");
+        setError("An unexpected error occurred while fetching user data.");
         console.error(err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
 
     fetchUser();
@@ -60,7 +63,7 @@ export function ProfileClient({ userId, isCurrentUser }: { userId: string, isCur
     return (
         <Card>
             <CardHeader><CardTitle>User Not Found</CardTitle></CardHeader>
-            <CardContent><p>This user profile could not be found.</p></CardContent>
+            <CardContent><p>This user profile could not be located.</p></CardContent>
         </Card>
     );
   }
@@ -79,7 +82,7 @@ export function ProfileClient({ userId, isCurrentUser }: { userId: string, isCur
                 <h1 className="text-2xl font-bold">{user.name}</h1>
                 <div className="flex items-center justify-center text-muted-foreground mt-1">
                   <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                  <span>{user.rating.toFixed(1)} ({user.reviews} reviews)</span>
+                  <span>{user.rating?.toFixed(1) ?? '0.0'} ({user.reviews ?? 0} reviews)</span>
                 </div>
               </div>
               <p className="text-center text-muted-foreground px-4">{user.bio}</p>
@@ -146,7 +149,6 @@ function ProfileSkeleton() {
                 <Skeleton className="h-16 w-full" />
                 <div className="w-full flex gap-2 pt-2">
                     <Skeleton className="h-10 flex-1" />
-                    <Skeleton className="h-10 w-10" />
                 </div>
                 </CardContent>
             </Card>
