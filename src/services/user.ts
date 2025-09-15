@@ -1,7 +1,8 @@
 
 "use server";
 
-import { auth, db, createUserWithEmailAndPassword, doc, setDoc, getDoc } from "@/lib/firebase";
+import { auth, db, createUserWithEmailAndPassword, doc, setDoc, getDoc, updateDoc } from "@/lib/firebase";
+import type { User } from "@/lib/types";
 
 // This is a server action. It will only run on the server.
 export async function createUser(email: string, password: string, name: string) {
@@ -44,5 +45,15 @@ export async function getUserProfile(uid: string) {
     } catch (error) {
         console.error("Error getting user profile:", error);
         throw new Error("Failed to get user profile.");
+    }
+}
+
+export async function updateUserProfile(uid: string, data: Partial<User>) {
+    try {
+        const userDocRef = doc(db, "users", uid);
+        await updateDoc(userDocRef, data);
+    } catch (error) {
+        console.error("Error updating user profile:", error);
+        throw new Error("Failed to update user profile.");
     }
 }

@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -76,8 +77,10 @@ export function ProfileClient({ userId }: { userId: string }) {
                  <Button className="flex-1">
                   <MessageSquare className="mr-2 h-4 w-4" /> Message
                 </Button>
-                <Button variant="outline">
-                  <Edit className="h-4 w-4" />
+                <Button variant="outline" asChild>
+                  <Link href="/settings">
+                    <Edit className="h-4 w-4" />
+                  </Link>
                 </Button>
               </div>
             </CardContent>
@@ -91,9 +94,9 @@ export function ProfileClient({ userId }: { userId: string }) {
               <CardDescription>These are the skills I can help you with.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
-              {user.skillsToTeach.length > 0 ? user.skillsToTeach.map(skill => (
+              {user.skillsToTeach && user.skillsToTeach.length > 0 ? user.skillsToTeach.map(skill => (
                 <Badge key={skill} variant="default" className="text-sm py-1 px-3">{skill}</Badge>
-              )) : <p className="text-sm text-muted-foreground">No skills to teach yet.</p>}
+              )) : <p className="text-sm text-muted-foreground">No skills to teach yet. Add some in settings!</p>}
             </CardContent>
           </Card>
           
@@ -103,9 +106,9 @@ export function ProfileClient({ userId }: { userId: string }) {
               <CardDescription>I'm currently interested in learning these skills.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
-              {user.skillsToLearn.length > 0 ? user.skillsToLearn.map(skill => (
+              {user.skillsToLearn && user.skillsToLearn.length > 0 ? user.skillsToLearn.map(skill => (
                 <Badge key={skill} variant="secondary" className="text-sm py-1 px-3">{skill}</Badge>
-              )) : <p className="text-sm text-muted-foreground">No skills to learn yet.</p>}
+              )) : <p className="text-sm text-muted-foreground">No skills to learn yet. Add some in settings!</p>}
             </CardContent>
           </Card>
         </div>
