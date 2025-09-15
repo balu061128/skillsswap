@@ -19,8 +19,9 @@ export function ProfileClient({ userId }: { userId: string }) {
 
   useEffect(() => {
     async function fetchUser() {
-      if (!userId) return;
+      // No need to check for userId here, parent component ensures it's valid
       setLoading(true);
+      setError(null);
       try {
         const userProfile = await getUserProfile(userId);
         if (userProfile) {
@@ -52,7 +53,12 @@ export function ProfileClient({ userId }: { userId: string }) {
   }
 
   if (!user) {
-    return <p>No user data found.</p>;
+    return (
+        <Card>
+            <CardHeader><CardTitle>Error</CardTitle></CardHeader>
+            <CardContent><p>User profile not found.</p></CardContent>
+        </Card>
+    );
   }
 
   return (
@@ -168,4 +174,3 @@ function ProfileSkeleton() {
         </div>
     );
 }
-
