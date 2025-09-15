@@ -1,7 +1,8 @@
 
+
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -28,7 +29,7 @@ import {
 } from "@/components/ui/form";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserProfile, updateUserProfile } from "@/services/user";
-import { Loader2, Image as ImageIcon, KeyRound } from "lucide-react";
+import { Loader2, Upload, KeyRound, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { User } from "@/lib/types";
@@ -37,7 +38,6 @@ import { Separator } from "@/components/ui/separator";
 const profileFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   bio: z.string().max(280, { message: "Bio cannot be longer than 280 characters." }).optional(),
-  avatarUrl: z.string().url({ message: "Please enter a valid URL." }).optional(),
   skillsToTeach: z.string().optional(),
   skillsToLearn: z.string().optional(),
 });
@@ -48,13 +48,15 @@ export default function SettingsPage() {
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [isFormLoading, setIsFormLoading] = useState(true);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
       name: "",
       bio: "",
-      avatarUrl: "",
       skillsToTeach: "",
       skillsToLearn: "",
     },
@@ -68,7 +70,6 @@ export default function SettingsPage() {
           form.reset({
             name: profile.name || "",
             bio: profile.bio || "",
-            avatarUrl: profile.avatarUrl || "",
             skillsToTeach: (profile.skillsToTeach || []).join(", "),
             skillsToLearn: (profile.skillsToLearn || []).join(", "),
           });
@@ -91,10 +92,10 @@ export default function SettingsPage() {
       const skillsToTeach = data.skillsToTeach?.split(',').map(s => s.trim()).filter(Boolean) || [];
       const skillsToLearn = data.skillsToLearn?.split(',').map(s => s.trim()).filter(Boolean) || [];
 
+      // NOTE: File upload logic is not implemented. This only updates text fields.
       const userData: Partial<User> = {
           name: data.name,
           bio: data.bio,
-          avatarUrl: data.avatarUrl,
           skillsToTeach,
           skillsToLearn
       };
@@ -113,6 +114,14 @@ export default function SettingsPage() {
       });
     }
   }
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setFileName(file.name);
+      // In a real app, you would start the upload process here.
+    }
+  };
 
   if (authLoading || isFormLoading) {
     return <SettingsSkeleton />;
@@ -156,23 +165,35 @@ export default function SettingsPage() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="avatarUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Profile Picture URL</FormLabel>
-                    <FormControl>
-                       <div className="relative">
-                        <ImageIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                        <Input placeholder="https://example.com/your-image.png" {...field} className="pl-10"/>
-                       </div>
-                    </FormControl>
-                    <FormDescription>Enter the URL of your profile image.</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+               <FormItem>
+                <FormLabel>Profile Picture</FormLabel>
+                <div className="flex items-center gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Choose File
+                  </Button>
+                  <Input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={handleFileChange}
+                    accept="image/png, image/jpeg, image/gif"
+                  />
+                  {fileName ? (
+                    <span className="text-sm text-muted-foreground">{fileName}</span>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">No file selected</span>
+                  )}
+                   <Button type="button" disabled>Upload</Button>
+                </div>
+                <FormDescription>
+                  Select a new profile picture to upload. (Upload functionality not yet active).
+                </FormDescription>
+              </FormItem>
                <FormField
                 control={form.control}
                 name="skillsToTeach"
