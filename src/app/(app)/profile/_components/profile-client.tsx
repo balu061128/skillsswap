@@ -19,8 +19,8 @@ export function ProfileClient({ userId, isCurrentUser }: { userId: string, isCur
 
   useEffect(() => {
     async function fetchUser() {
+      // This check ensures we never call the service with an undefined ID.
       if (!userId) {
-        // This case should be handled by the parent component now, but as a safeguard:
         setError("No user ID provided.");
         setLoading(false);
         return;
