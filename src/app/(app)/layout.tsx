@@ -26,17 +26,17 @@ import {
   Lightbulb,
   Calendar,
   Settings,
+  LogOut,
 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/shared/Logo";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth, AuthProvider } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
-import { AuthProvider } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -52,6 +52,11 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
       </div>
     );
   }
+
+  const handleLogout = async () => {
+    await signOut();
+    router.push('/login');
+  };
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -209,7 +214,10 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
               <DropdownMenuItem asChild><Link href="/settings">Settings</Link></DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild><Link href="/">Logout</Link></DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2 cursor-pointer">
+                <LogOut className="h-4 w-4" />
+                <span>Logout</span>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
