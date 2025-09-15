@@ -214,29 +214,29 @@ export default function SettingsPage() {
             </CardFooter>
           </Card>
         </form>
+          
+        <Card>
+          <CardHeader>
+            <CardTitle>Account</CardTitle>
+            <CardDescription>Manage your account settings.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input id="username" placeholder="your_username" disabled />
+              <FormDescription>Usernames cannot be changed yet.</FormDescription>
+            </div>
+            <Separator />
+            <div className="space-y-2">
+              <Label>Password</Label>
+              <Button variant="outline" disabled>
+                  <KeyRound className="mr-2 h-4 w-4" /> Change Password
+              </Button>
+              <FormDescription>Password management is not yet available.</FormDescription>
+            </div>
+          </CardContent>
+        </Card>
       </Form>
-      
-       <Card>
-        <CardHeader>
-          <CardTitle>Account</CardTitle>
-          <CardDescription>Manage your account settings.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <Input id="username" placeholder="your_username" disabled />
-            <FormDescription>Usernames cannot be changed yet.</FormDescription>
-          </div>
-          <Separator />
-           <div className="space-y-2">
-            <Label>Password</Label>
-            <Button variant="outline" disabled>
-                <KeyRound className="mr-2 h-4 w-4" /> Change Password
-            </Button>
-             <FormDescription>Password management is not yet available.</FormDescription>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
