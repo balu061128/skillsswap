@@ -30,21 +30,7 @@ export function RecommendationsClient({ currentUser }: RecommendationsClientProp
         interests: currentUser.interests,
       };
 
-      // MOCKING the AI call. In a real scenario, you'd use the line below.
-      // const response = await recommendContent(input);
-
-      const MOCK_RESPONSE: RecommendContentOutput = {
-        recommendations: [
-          "A tutorial on 'Introduction to Three.js for React Developers'",
-          "Advanced Python for Data Science course on Coursera",
-          "Article: 'Creating Interactive Data Visualizations with D3.js and React'",
-          "YouTube series on GLSL shaders",
-          "Project idea: Build a 3D portfolio website using Next.js and Three.js"
-        ]
-      };
-
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      const response = MOCK_RESPONSE;
+      const response = await recommendContent(input);
 
       setResult(response);
     } catch (e) {

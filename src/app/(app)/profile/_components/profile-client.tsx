@@ -12,14 +12,18 @@ import { getUserProfile } from "@/services/user";
 import type { User } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function ProfileClient({ userId }: { userId: string }) {
+export function ProfileClient({ userId, isCurrentUser }: { userId: string, isCurrentUser: boolean }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchUser() {
-      // No need to check for userId here, parent component ensures it's valid
+      if (!userId) {
+        setLoading(false);
+        setError("No user ID provided.");
+        return;
+      }
       setLoading(true);
       setError(null);
       try {
@@ -55,8 +59,8 @@ export function ProfileClient({ userId }: { userId: string }) {
   if (!user) {
     return (
         <Card>
-            <CardHeader><CardTitle>Error</CardTitle></CardHeader>
-            <CardContent><p>User profile not found.</p></CardContent>
+            <CardHeader><CardTitle>User Not Found</CardTitle></CardHeader>
+            <CardContent><p>This user profile could not be found.</p></CardContent>
         </Card>
     );
   }
@@ -80,14 +84,17 @@ export function ProfileClient({ userId }: { userId: string }) {
               </div>
               <p className="text-center text-muted-foreground px-4">{user.bio}</p>
               <div className="w-full flex gap-2 pt-2">
-                 <Button className="flex-1">
-                  <MessageSquare className="mr-2 h-4 w-4" /> Message
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/settings">
-                    <Edit className="h-4 w-4" />
-                  </Link>
-                </Button>
+                {isCurrentUser ? (
+                  <Button asChild className="flex-1">
+                    <Link href="/settings">
+                      <Edit className="mr-2 h-4 w-4" /> Edit Profile
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button className="flex-1">
+                    <MessageSquare className="mr-2 h-4 w-4" /> Message
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -97,24 +104,24 @@ export function ProfileClient({ userId }: { userId: string }) {
           <Card>
             <CardHeader>
               <CardTitle>Skills to Teach</CardTitle>
-              <CardDescription>These are the skills I can help you with.</CardDescription>
+              <CardDescription>These are the skills {isCurrentUser ? 'I' : 'they'} can help you with.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
               {user.skillsToTeach && user.skillsToTeach.length > 0 ? user.skillsToTeach.map(skill => (
                 <Badge key={skill} variant="default" className="text-sm py-1 px-3">{skill}</Badge>
-              )) : <p className="text-sm text-muted-foreground">No skills to teach yet. Add some in settings!</p>}
+              )) : <p className="text-sm text-muted-foreground">No skills to teach yet.</p>}
             </CardContent>
           </Card>
           
           <Card>
             <CardHeader>
               <CardTitle>Skills to Learn</CardTitle>
-              <CardDescription>I'm currently interested in learning these skills.</CardDescription>
+              <CardDescription>{isCurrentUser ? 'I\'m' : 'They are'} currently interested in learning these skills.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
               {user.skillsToLearn && user.skillsToLearn.length > 0 ? user.skillsToLearn.map(skill => (
                 <Badge key={skill} variant="secondary" className="text-sm py-1 px-3">{skill}</Badge>
-              )) : <p className="text-sm text-muted-foreground">No skills to learn yet. Add some in settings!</p>}
+              )) : <p className="text-sm text-muted-foreground">No skills to learn yet.</p>}
             </CardContent>
           </Card>
         </div>

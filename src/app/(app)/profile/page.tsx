@@ -26,7 +26,7 @@ export default function ProfilePage() {
     );
   }
 
-  return <ProfileClient userId={user.uid} />;
+  return <ProfileClient userId={user.uid} isCurrentUser={true} />;
 }
 
 function ProfileSkeleton() {
@@ -44,7 +44,6 @@ function ProfileSkeleton() {
                 <Skeleton className="h-16 w-full" />
                 <div className="w-full flex gap-2 pt-2">
                     <Skeleton className="h-10 flex-1" />
-                    <Skeleton className="h-10 w-10" />
                 </div>
                 </CardContent>
             </Card>

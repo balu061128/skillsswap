@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -30,6 +30,7 @@ import { getUserProfile, updateUserProfile } from "@/services/user";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { User } from "@/lib/types";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -43,6 +44,8 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 export default function SettingsPage() {
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
+  const [isFormLoading, setIsFormLoading] = useState(true);
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
@@ -55,6 +58,7 @@ export default function SettingsPage() {
   
   useEffect(() => {
     if (user) {
+      setIsFormLoading(true);
       getUserProfile(user.uid).then((profile) => {
         if (profile) {
           form.reset({
@@ -64,9 +68,12 @@ export default function SettingsPage() {
             skillsToLearn: (profile.skillsToLearn || []).join(", "),
           });
         }
+        setIsFormLoading(false);
       });
+    } else if (!authLoading) {
+      setIsFormLoading(false);
     }
-  }, [user, form]);
+  }, [user, authLoading, form]);
 
 
   async function onSubmit(data: ProfileFormValues) {
@@ -79,12 +86,15 @@ export default function SettingsPage() {
       const skillsToTeach = data.skillsToTeach?.split(',').map(s => s.trim()).filter(Boolean) || [];
       const skillsToLearn = data.skillsToLearn?.split(',').map(s => s.trim()).filter(Boolean) || [];
 
-      await updateUserProfile(user.uid, {
-        name: data.name,
-        bio: data.bio,
-        skillsToTeach,
-        skillsToLearn,
-      });
+      // Optimistically create a user data object to pass to updateUserProfile
+      const userData: Partial<User> = {
+          name: data.name,
+          bio: data.bio,
+          skillsToTeach,
+          skillsToLearn
+      };
+
+      await updateUserProfile(user.uid, userData);
 
       toast({
         title: "Profile Updated",
@@ -99,7 +109,7 @@ export default function SettingsPage() {
     }
   }
 
-  if (authLoading || form.formState.isLoading) {
+  if (authLoading || isFormLoading) {
     return <SettingsSkeleton />;
   }
 
@@ -151,7 +161,7 @@ export default function SettingsPage() {
                       <Input placeholder="React, Python, Figma" {...field} />
                     </FormControl>
                     <FormDescription>
-                      Enter skills separated by commas.
+                      Enter skills you can teach, separated by commas.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -167,7 +177,7 @@ export default function SettingsPage() {
                       <Input placeholder="Data Science, 3D Modeling" {...field} />
                     </FormControl>
                      <FormDescription>
-                      Enter skills separated by commas.
+                      Enter skills you want to learn, separated by commas.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -176,7 +186,8 @@ export default function SettingsPage() {
             </CardContent>
             <CardFooter>
               <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? <Loader2 className="animate-spin" /> : "Save Changes"}
+                {form.formState.isSubmitting ? <Loader2 className="animate-spin mr-2" /> : null}
+                Save Changes
               </Button>
             </CardFooter>
           </Card>
