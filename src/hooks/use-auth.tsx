@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
@@ -23,15 +24,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => unsubscribe();
   }, []);
-  
-  // You can add a loading spinner here
-  if (loading) {
-      return (
-          <div className="flex justify-center items-center h-screen">
-              <Loader2 className="h-8 w-8 animate-spin"/>
-          </div>
-      )
-  }
 
   return <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>;
 }

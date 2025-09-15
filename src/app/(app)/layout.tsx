@@ -1,3 +1,6 @@
+
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,8 +28,35 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/shared/Logo";
+import { useAuth } from "@/hooks/use-auth";
+import { Loader2 } from "lucide-react";
+import { AuthProvider } from "@/hooks/use-auth";
+import { useRouter } from "next/navigation";
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+
+function AppLayoutContent({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  if (loading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    // In a real app, you'd probably want a router.push('/login') here
+    // For now, we'll just show a message.
+    router.push('/login');
+    return (
+       <div className="flex h-screen w-full items-center justify-center">
+        <p>Please log in to continue.</p>
+      </div>
+    )
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-60 flex-col border-r bg-background sm:flex">
@@ -84,7 +114,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
           <div className="mt-auto p-4">
               <Link
-                href="#"
+                href="/settings"
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <Settings className="h-4 w-4" />
@@ -172,15 +202,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
                 <Avatar>
-                  <AvatarImage src="https://picsum.photos/seed/user-avatar/40/40" alt="User" data-ai-hint="person" />
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarImage src={user.photoURL || "https://picsum.photos/seed/user-avatar/40/40" } alt="User" data-ai-hint="person" />
+                  <AvatarFallback>{user.displayName?.charAt(0) ?? 'U'}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem asChild><Link href="/settings">Settings</Link></DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild><Link href="/">Logout</Link></DropdownMenuItem>
@@ -192,5 +222,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AuthProvider>
+      <AppLayoutContent>{children}</AppLayoutContent>
+    </AuthProvider>
   );
 }
