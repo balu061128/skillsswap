@@ -10,11 +10,9 @@ export default function OtherUserProfilePage() {
     const { user: currentUser } = useAuth();
     const userId = params.userId as string;
 
-    if (!userId) {
-        return <div>Loading...</div>; // Or a more sophisticated loading state
-    }
-    
-    // Check if the profile being viewed is the current user's profile
+    // The layout now handles the loading state, so we can assume currentUser and userId are available.
+    // If not, the layout would have already redirected to login.
+
     const isCurrentUser = currentUser ? currentUser.uid === userId : false;
 
     return <ProfileClient userId={userId} isCurrentUser={isCurrentUser} />;
