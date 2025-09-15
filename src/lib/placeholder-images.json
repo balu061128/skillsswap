@@ -1,3 +1,64 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "Hero image for landing page showing collaboration",
+      "imageUrl": "https://picsum.photos/seed/skillswap-hero/600/600",
+      "imageHint": "collaboration learning"
+    },
+    {
+      "id": "user-avatar",
+      "description": "Default user avatar",
+      "imageUrl": "https://picsum.photos/seed/user-avatar/40/40",
+      "imageHint": "person"
+    },
+    {
+      "id": "user-profile-avatar",
+      "description": "Larger user avatar for profile page",
+      "imageUrl": "https://picsum.photos/seed/user-avatar/128/128",
+      "imageHint": "person face"
+    },
+    {
+      "id": "user1",
+      "description": "Avatar for a sample user",
+      "imageUrl": "https://picsum.photos/seed/user1/40/40",
+      "imageHint": "person face"
+    },
+    {
+      "id": "user2",
+      "description": "Avatar for another sample user",
+      "imageUrl": "https://picsum.photos/seed/user2/40/40",
+      "imageHint": "woman smiling"
+    },
+    {
+      "id": "reviewer1",
+      "description": "Avatar for a reviewer",
+      "imageUrl": "https://picsum.photos/seed/reviewer1/40/40",
+      "imageHint": "person smiling"
+    },
+    {
+      "id": "reviewer2",
+      "description": "Avatar for another reviewer",
+      "imageUrl": "https://picsum.photos/seed/reviewer2/40/40",
+      "imageHint": "man face"
+    },
+    {
+        "id": "sara-avatar",
+        "description": "Avatar for Sara",
+        "imageUrl": "https://picsum.photos/seed/sara/80/80",
+        "imageHint": "person face"
+    },
+    {
+        "id": "john-avatar",
+        "description": "Avatar for John",
+        "imageUrl": "https://picsum.photos/seed/john/80/80",
+        "imageHint": "person face"
+    },
+    {
+        "id": "felicity-avatar",
+        "description": "Avatar for Felicity",
+        "imageUrl": "https://picsum.photos/seed/felicity/80/80",
+        "imageHint": "person face"
+    }
+  ]
 }
