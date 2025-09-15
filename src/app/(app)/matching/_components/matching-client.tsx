@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -113,7 +114,7 @@ export function MatchingClient({ currentUser }: { currentUser: { skills: string[
                         </CardContent>
                         <CardFooter>
                              <Button asChild className="w-full">
-                                <Link href={`/profile/${partner.id}`}>View Profile <ArrowRight className="ml-2 h-4 w-4"/></Link>
+                                <Link href={`/profile?userId=${partner.id}`}>View Profile <ArrowRight className="ml-2 h-4 w-4"/></Link>
                             </Button>
                         </CardFooter>
                     </Card>

@@ -3,15 +3,16 @@
 
 import { useAuth } from "@/hooks/use-auth";
 import { ProfileClient } from "./_components/profile-client";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProfilePage() {
-    const params = useParams();
+    const searchParams = useSearchParams();
     const { user: currentUser, loading } = useAuth();
     
-    // The userId could be from the URL for other users, or from auth for the current user.
-    const userIdFromParams = params.userId as string;
+    // Check for a userId in the query params first.
+    const userIdFromParams = searchParams.get('userId');
+    // If not viewing someone else's profile, use the current user's ID.
     const userId = userIdFromParams || currentUser?.uid;
     
     if (loading || !userId) {
@@ -29,5 +30,3 @@ export default function ProfilePage() {
 
     return <ProfileClient userId={userId} isCurrentUser={isCurrentUser} />;
 }
-
-    
