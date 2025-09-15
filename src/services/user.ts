@@ -32,6 +32,9 @@ export async function createUser(email: string, password: string, name: string) 
 }
 
 export async function getUserProfile(uid: string) {
+    if (!uid) {
+        return null;
+    }
     try {
         const userDocRef = doc(db, "users", uid);
         const userDoc = await getDoc(userDocRef);
@@ -39,12 +42,13 @@ export async function getUserProfile(uid: string) {
         if (userDoc.exists()) {
             return { id: userDoc.id, ...userDoc.data() };
         } else {
-            console.log("No such document!");
+            console.log("No such document for uid:", uid);
             return null;
         }
     } catch (error) {
-        console.error("Error getting user profile:", error);
-        throw new Error("Failed to get user profile.");
+        console.error("Error getting user profile for uid:", uid, error);
+        // Return null instead of throwing an error to prevent crashes
+        return null;
     }
 }
 
