@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,12 +33,22 @@ import Link from "next/link";
 import { Logo } from "@/components/shared/Logo";
 import { useAuth, AuthProvider } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+
+const navLinks = [
+  { href: "/dashboard", icon: Home, label: "Dashboard" },
+  { href: "/profile", icon: Users, label: "My Profile" },
+  { href: "/matching", icon: Briefcase, label: "Skill Matching" },
+  { href: "/skills", icon: LineChart, label: "Skill Listings" },
+  { href: "/recommendations", icon: Lightbulb, label: "Recommendations" },
+  { href: "/schedule", icon: Calendar, label: "Schedule" },
+];
 
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -69,54 +80,31 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
           </div>
           <div className="flex-1 overflow-auto py-2">
             <nav className="grid items-start px-4 text-sm font-medium">
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <Home className="h-4 w-4" />
-                Dashboard
-              </Link>
-              <Link
-                href="/profile"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <Users className="h-4 w-4" />
-                My Profile
-              </Link>
-              <Link
-                href="/matching"
-                className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
-              >
-                <Briefcase className="h-4 w-4" />
-                Skill Matching
-              </Link>
-              <Link
-                href="/skills"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <LineChart className="h-4 w-4" />
-                Skill Listings
-              </Link>
-              <Link
-                href="/recommendations"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <Lightbulb className="h-4 w-4" />
-                Recommendations
-              </Link>
-              <Link
-                href="/schedule"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <Calendar className="h-4 w-4" />
-                Schedule
-              </Link>
+              {navLinks.map(link => {
+                const isActive = pathname === link.href;
+                return (
+                   <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary",
+                      isActive ? "bg-muted text-primary" : "text-muted-foreground"
+                    )}
+                  >
+                    <link.icon className="h-4 w-4" />
+                    {link.label}
+                  </Link>
+                )
+              })}
             </nav>
           </div>
           <div className="mt-auto p-4">
               <Link
                 href="/settings"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary",
+                  pathname === "/settings" ? "bg-muted text-primary" : "text-muted-foreground"
+                )}
               >
                 <Settings className="h-4 w-4" />
                 Settings
@@ -142,48 +130,22 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                   <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
                   <span className="sr-only">Skill Swap</span>
                 </Link>
-                 <Link
-                  href="/dashboard"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <Home className="h-5 w-5" />
-                  Dashboard
-                </Link>
-                <Link
-                  href="/profile"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <Users className="h-5 w-5" />
-                  My Profile
-                </Link>
-                <Link
-                  href="/matching"
-                  className="flex items-center gap-4 px-2.5 text-foreground"
-                >
-                  <Briefcase className="h-5 w-5" />
-                  Skill Matching
-                </Link>
-                <Link
-                  href="/skills"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <LineChart className="h-5 w-5" />
-                  Skill Listings
-                </Link>
-                 <Link
-                  href="/recommendations"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <Lightbulb className="h-5 w-5" />
-                  Recommendations
-                </Link>
-                <Link
-                  href="/schedule"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <Calendar className="h-5 w-5" />
-                  Schedule
-                </Link>
+                 {navLinks.map(link => {
+                   const isActive = pathname === link.href;
+                   return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className={cn(
+                          "flex items-center gap-4 px-2.5",
+                           isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        <link.icon className="h-5 w-5" />
+                        {link.label}
+                      </Link>
+                   )
+                 })}
               </nav>
             </SheetContent>
           </Sheet>

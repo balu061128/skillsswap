@@ -27,14 +27,16 @@ import {
 } from "@/components/ui/form";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserProfile, updateUserProfile } from "@/services/user";
-import { Loader2 } from "lucide-react";
+import { Loader2, Image as ImageIcon, KeyRound } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { User } from "@/lib/types";
+import { Separator } from "@/components/ui/separator";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   bio: z.string().max(280, { message: "Bio cannot be longer than 280 characters." }).optional(),
+  avatarUrl: z.string().url({ message: "Please enter a valid URL." }).optional(),
   skillsToTeach: z.string().optional(),
   skillsToLearn: z.string().optional(),
 });
@@ -51,6 +53,7 @@ export default function SettingsPage() {
     defaultValues: {
       name: "",
       bio: "",
+      avatarUrl: "",
       skillsToTeach: "",
       skillsToLearn: "",
     },
@@ -64,6 +67,7 @@ export default function SettingsPage() {
           form.reset({
             name: profile.name || "",
             bio: profile.bio || "",
+            avatarUrl: profile.avatarUrl || "",
             skillsToTeach: (profile.skillsToTeach || []).join(", "),
             skillsToLearn: (profile.skillsToLearn || []).join(", "),
           });
@@ -86,10 +90,10 @@ export default function SettingsPage() {
       const skillsToTeach = data.skillsToTeach?.split(',').map(s => s.trim()).filter(Boolean) || [];
       const skillsToLearn = data.skillsToLearn?.split(',').map(s => s.trim()).filter(Boolean) || [];
 
-      // Optimistically create a user data object to pass to updateUserProfile
       const userData: Partial<User> = {
           name: data.name,
           bio: data.bio,
+          avatarUrl: data.avatarUrl,
           skillsToTeach,
           skillsToLearn
       };
@@ -114,7 +118,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full grid gap-8">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <Card>
@@ -147,6 +151,23 @@ export default function SettingsPage() {
                     <FormControl>
                       <Textarea placeholder="Tell us a little about yourself" {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="avatarUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Profile Picture URL</FormLabel>
+                    <FormControl>
+                       <div className="relative">
+                        <ImageIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input placeholder="https://example.com/your-image.png" {...field} className="pl-10"/>
+                       </div>
+                    </FormControl>
+                    <FormDescription>Enter the URL of your profile image.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -185,7 +206,7 @@ export default function SettingsPage() {
               />
             </CardContent>
             <CardFooter>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
+              <Button type="submit" disabled={form.formState.isSubmitting || isFormLoading}>
                 {form.formState.isSubmitting ? <Loader2 className="animate-spin mr-2" /> : null}
                 Save Changes
               </Button>
@@ -193,6 +214,28 @@ export default function SettingsPage() {
           </Card>
         </form>
       </Form>
+      
+       <Card>
+        <CardHeader>
+          <CardTitle>Account</CardTitle>
+          <CardDescription>Manage your account settings.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="username">Username</Label>
+            <Input id="username" placeholder="your_username" disabled />
+            <FormDescription>Usernames cannot be changed yet.</FormDescription>
+          </div>
+          <Separator />
+           <div className="space-y-2">
+            <Label>Password</Label>
+            <Button variant="outline" disabled>
+                <KeyRound className="mr-2 h-4 w-4" /> Change Password
+            </Button>
+             <FormDescription>Password management is not yet available.</FormDescription>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
@@ -212,6 +255,10 @@ function SettingsSkeleton() {
         <div className="space-y-2">
           <Skeleton className="h-4 w-16" />
           <Skeleton className="h-20 w-full" />
+        </div>
+         <div className="space-y-2">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-10 w-full" />
         </div>
         <div className="space-y-2">
           <Skeleton className="h-4 w-24" />
