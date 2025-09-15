@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,23 +39,18 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
 
-  if (loading) {
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [loading, user, router]);
+
+  if (loading || !user) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
-  }
-
-  if (!user) {
-    // In a real app, you'd probably want a router.push('/login') here
-    // For now, we'll just show a message.
-    router.push('/login');
-    return (
-       <div className="flex h-screen w-full items-center justify-center">
-        <p>Please log in to continue.</p>
-      </div>
-    )
   }
 
   return (
