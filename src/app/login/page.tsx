@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { signInWithEmailAndPassword, auth } from "@/lib/firebase";
+import { cn } from "@/lib/utils";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -26,9 +27,11 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleLogin = async () => {
     setLoading(true);
+    setError(false);
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast({
@@ -38,9 +41,17 @@ export default function LoginPage() {
       router.push("/dashboard");
     } catch (error: any) {
       console.error("Login failed:", error);
+      
+      let description = "Could not log you in. Please check your credentials and try again.";
+      if (error.code === 'auth/invalid-credential') {
+        setError(true);
+        description = "Invalid email or password. Please try again.";
+        setTimeout(() => setError(false), 500); // Reset animation class
+      }
+
       toast({
         title: "Login Failed",
-        description: error.message || "Could not log you in. Please check your credentials.",
+        description: description,
         variant: "destructive",
       });
     }
@@ -50,7 +61,7 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-muted/40">
       <div className="w-full max-w-sm animate-fade-in-up">
-        <Card>
+        <Card className={cn(error ? "animate-shake" : "")}>
           <CardHeader className="space-y-4 text-center">
             <Logo className="justify-center" />
             <div className="space-y-1">
