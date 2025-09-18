@@ -1,7 +1,7 @@
 
 "use server";
 
-import { auth, db, createUserWithEmailAndPassword, doc, setDoc, getDoc, updateDoc } from "@/lib/firebase";
+import { auth, db, storage, ref, uploadBytes, getDownloadURL, createUserWithEmailAndPassword, doc, setDoc, getDoc, updateDoc } from "@/lib/firebase";
 import type { User } from "@/lib/types";
 
 // This is a server action. It will only run on the server.
@@ -70,5 +70,25 @@ export async function updateUserProfile(uid: string, data: Partial<User>) {
     } catch (error) {
         console.error("Error updating user profile:", error);
         throw new Error("Failed to update user profile.");
+    }
+}
+
+
+export async function uploadProfilePicture(uid: string, file: File): Promise<string> {
+    if (!uid || !file) {
+        throw new Error("User ID and file are required.");
+    }
+
+    try {
+        const storageRef = ref(storage, `profile-pictures/${uid}/${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        
+        await updateUserProfile(uid, { avatarUrl: downloadURL });
+        
+        return downloadURL;
+    } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        throw new Error("Failed to upload profile picture.");
     }
 }

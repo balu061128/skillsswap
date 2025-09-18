@@ -28,7 +28,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useAuth } from "@/hooks/use-auth";
-import { getUserProfile, updateUserProfile } from "@/services/user";
+import { getUserProfile, updateUserProfile, uploadProfilePicture } from "@/services/user";
 import { Loader2, Upload, KeyRound, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -48,7 +48,8 @@ export default function SettingsPage() {
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [isFormLoading, setIsFormLoading] = useState(true);
-  const [fileName, setFileName] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
 
@@ -92,7 +93,6 @@ export default function SettingsPage() {
       const skillsToTeach = data.skillsToTeach?.split(',').map(s => s.trim()).filter(Boolean) || [];
       const skillsToLearn = data.skillsToLearn?.split(',').map(s => s.trim()).filter(Boolean) || [];
 
-      // NOTE: File upload logic is not implemented. This only updates text fields.
       const userData: Partial<User> = {
           name: data.name,
           bio: data.bio,
@@ -104,7 +104,7 @@ export default function SettingsPage() {
 
       toast({
         title: "Profile Updated",
-        description: "Your profile has been successfully updated.",
+        description: "Your profile text fields have been successfully updated.",
       });
     } catch (error) {
       toast({
@@ -118,8 +118,32 @@ export default function SettingsPage() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setFileName(file.name);
-      // In a real app, you would start the upload process here.
+      setSelectedFile(file);
+    }
+  };
+  
+  const handleFileUpload = async () => {
+    if (!selectedFile || !user) return;
+
+    setIsUploading(true);
+    try {
+        await uploadProfilePicture(user.uid, selectedFile);
+        toast({
+            title: "Success!",
+            description: "Your profile picture has been updated.",
+        });
+        setSelectedFile(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+    } catch (error) {
+        toast({
+            title: "Upload Failed",
+            description: "Could not upload your picture. Please try again.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsUploading(false);
     }
   };
 
@@ -183,15 +207,18 @@ export default function SettingsPage() {
                     onChange={handleFileChange}
                     accept="image/png, image/jpeg, image/gif"
                   />
-                  {fileName ? (
-                    <span className="text-sm text-muted-foreground">{fileName}</span>
+                  {selectedFile ? (
+                    <span className="text-sm text-muted-foreground">{selectedFile.name}</span>
                   ) : (
                     <span className="text-sm text-muted-foreground">No file selected</span>
                   )}
-                   <Button type="button" disabled>Upload</Button>
+                   <Button type="button" onClick={handleFileUpload} disabled={!selectedFile || isUploading}>
+                        {isUploading ? <Loader2 className="animate-spin mr-2" /> : null}
+                        Upload
+                    </Button>
                 </div>
                 <FormDescription>
-                  Select a new profile picture to upload. (Upload functionality not yet active).
+                  Select a new profile picture to upload, then click "Upload".
                 </FormDescription>
               </FormItem>
                <FormField
