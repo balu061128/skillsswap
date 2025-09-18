@@ -4,6 +4,7 @@
 import { RecommendationsClient } from "./_components/recommendations-client";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
