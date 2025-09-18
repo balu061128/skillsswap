@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useMemo } from "react";
@@ -23,13 +24,10 @@ const allSkills = [
 export default function SkillsPage() {
     const [searchTerm, setSearchTerm] = useState("");
 
-    const filteredSkills = useMemo(() => {
-        if (!searchTerm) return allSkills;
-        return allSkills.filter(skill => 
-            skill.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            skill.category.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-    }, [searchTerm]);
+    const filteredSkills = allSkills.filter(skill => 
+        skill.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        skill.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   return (
     <div className="w-full space-y-8">

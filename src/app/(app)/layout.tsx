@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -52,6 +52,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (!loading && !user) {
@@ -70,6 +71,14 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const handleLogout = async () => {
     await signOut();
     router.push('/login');
+  };
+  
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery) {
+      // In a real app, you would navigate to a search results page
+      console.log('Searching for:', searchQuery);
+      // router.push(`/search?q=${searchQuery}`);
+    }
   };
 
   return (
@@ -158,6 +167,9 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
               type="search"
               placeholder="Search..."
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px] transition-all duration-300 focus:w-[240px] lg:focus:w-[360px]"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
             />
           </div>
           <Button variant="ghost" size="icon" className="rounded-full">
