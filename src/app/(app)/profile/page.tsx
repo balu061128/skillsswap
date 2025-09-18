@@ -4,6 +4,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { ProfileClient } from "./_components/profile-client";
 import { useSearchParams } from "next/navigation";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProfilePage() {
