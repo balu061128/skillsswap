@@ -132,10 +132,8 @@ export default function SettingsPage() {
             title: "Success!",
             description: "Your profile picture has been updated.",
         });
-        setSelectedFile(null);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
+        // Force a page reload to show the new avatar in the header
+        window.location.reload(); 
     } catch (error) {
         toast({
             title: "Upload Failed",
@@ -189,38 +187,6 @@ export default function SettingsPage() {
                   </FormItem>
                 )}
               />
-               <FormItem>
-                <FormLabel>Profile Picture</FormLabel>
-                <div className="flex items-center gap-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <Upload className="mr-2 h-4 w-4" />
-                    Choose File
-                  </Button>
-                  <Input
-                    type="file"
-                    ref={fileInputRef}
-                    className="hidden"
-                    onChange={handleFileChange}
-                    accept="image/png, image/jpeg, image/gif"
-                  />
-                  {selectedFile ? (
-                    <span className="text-sm text-muted-foreground">{selectedFile.name}</span>
-                  ) : (
-                    <span className="text-sm text-muted-foreground">No file selected</span>
-                  )}
-                   <Button type="button" onClick={handleFileUpload} disabled={!selectedFile || isUploading}>
-                        {isUploading ? <Loader2 className="animate-spin mr-2" /> : <ImageIcon className="mr-2 h-4 w-4" />}
-                        Upload
-                    </Button>
-                </div>
-                <FormDescription>
-                  Select a new profile picture to upload, then click "Upload".
-                </FormDescription>
-              </FormItem>
                <FormField
                 control={form.control}
                 name="skillsToTeach"
@@ -262,6 +228,44 @@ export default function SettingsPage() {
             </CardFooter>
           </Card>
         </form>
+      </Form>
+        
+      <Card>
+          <CardHeader>
+            <CardTitle>Profile Picture</CardTitle>
+            <CardDescription>Update your avatar. This is a separate action from saving your profile.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="mr-2 h-4 w-4" />
+                Choose File
+              </Button>
+              <Input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileChange}
+                accept="image/png, image/jpeg, image/gif"
+              />
+              {selectedFile ? (
+                <span className="text-sm text-muted-foreground">{selectedFile.name}</span>
+              ) : (
+                <span className="text-sm text-muted-foreground">No file selected</span>
+              )}
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button type="button" onClick={handleFileUpload} disabled={!selectedFile || isUploading}>
+                {isUploading ? <Loader2 className="animate-spin mr-2" /> : <ImageIcon className="mr-2 h-4 w-4" />}
+                Upload Picture
+            </Button>
+          </CardFooter>
+        </Card>
           
         <Card>
           <CardHeader>
@@ -284,7 +288,6 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
-      </Form>
     </div>
   );
 }
@@ -324,3 +327,5 @@ function SettingsSkeleton() {
     </Card>
   )
 }
+
+    
