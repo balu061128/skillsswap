@@ -29,6 +29,7 @@ export default function RecommendationsPage() {
     }
 
     async function fetchUser() {
+      setLoading(true);
       const profile = await getUserProfile(authUser.uid);
       if (profile) {
         setCurrentUser(profile);
@@ -74,7 +75,7 @@ export default function RecommendationsPage() {
         <Card>
             <CardHeader>
                 <CardTitle>Profile Not Found</CardTitle>
-                <CardDescription>We couldn't load your profile. Please try again later.</CardDescription>
+                <CardDescription>We couldn't load your profile. Please add your skills and interests in Settings to use this feature.</CardDescription>
             </CardHeader>
         </Card>
     );

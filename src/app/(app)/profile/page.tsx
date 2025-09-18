@@ -18,6 +18,9 @@ export default function ProfilePage() {
     // If not, use the current logged-in user's ID.
     const userId = userIdFromParams || currentUser?.uid;
     
+    // Determine if the profile being viewed is the current logged-in user's profile.
+    const isCurrentUser = currentUser ? currentUser.uid === userId : false;
+    
     // Show a skeleton loader while authentication is in progress or if we don't have a userId yet.
     if (loading || !userId) {
         return (
@@ -66,9 +69,6 @@ export default function ProfilePage() {
             </div>
         );
     }
-    
-    // Determine if the profile being viewed is the current logged-in user's profile.
-    const isCurrentUser = currentUser ? currentUser.uid === userId : false;
 
     return <ProfileClient userId={userId} isCurrentUser={isCurrentUser} />;
 }

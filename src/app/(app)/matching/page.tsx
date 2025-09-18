@@ -13,7 +13,6 @@ import { useEffect, useState } from "react";
 import { getUserProfile } from "@/services/user";
 import type { User } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Loader2 } from "lucide-react";
 
 export default function MatchingPage() {
   const { user: authUser, loading: authLoading } = useAuth();
@@ -23,12 +22,12 @@ export default function MatchingPage() {
   useEffect(() => {
     if (authLoading) return;
     if (!authUser) {
-      // This case should be handled by the layout, but as a fallback:
       setLoading(false);
       return;
     }
 
     async function fetchUser() {
+      setLoading(true);
       const profile = await getUserProfile(authUser.uid);
       if (profile) {
         setCurrentUser(profile);
@@ -59,7 +58,7 @@ export default function MatchingPage() {
         <Card>
             <CardHeader>
                 <CardTitle>Profile Not Found</CardTitle>
-                <CardDescription>We couldn't load your profile. Please try again later.</CardDescription>
+                <CardDescription>We couldn't load your profile. Please add your skills and interests in Settings to use this feature.</CardDescription>
             </CardHeader>
         </Card>
     );
