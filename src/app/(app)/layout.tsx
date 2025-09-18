@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useEffect } from "react";
@@ -28,6 +29,7 @@ import {
   Calendar,
   Settings,
   LogOut,
+  MessageSquare,
 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/shared/Logo";
@@ -42,6 +44,7 @@ const navLinks = [
   { href: "/skills", icon: LineChart, label: "Skill Listings" },
   { href: "/recommendations", icon: Lightbulb, label: "Recommendations" },
   { href: "/schedule", icon: Calendar, label: "Schedule" },
+  { href: "/messages", icon: MessageSquare, label: "Messages" },
 ];
 
 
@@ -81,7 +84,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
           <div className="flex-1 overflow-auto py-2">
             <nav className="grid items-start px-4 text-sm font-medium">
               {navLinks.map(link => {
-                const isActive = pathname === link.href;
+                const isActive = pathname.startsWith(link.href);
                 return (
                    <Link
                     key={link.href}
@@ -131,7 +134,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                   <span className="sr-only">Skill Collab</span>
                 </Link>
                  {navLinks.map(link => {
-                   const isActive = pathname === link.href;
+                   const isActive = pathname.startsWith(link.href);
                    return (
                       <Link
                         key={link.href}

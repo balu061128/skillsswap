@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -19,10 +20,8 @@ export function ProfileClient({ userId, isCurrentUser }: { userId: string, isCur
 
   useEffect(() => {
     async function fetchUser() {
-      // This check ensures we never call the service with an undefined or null ID.
       if (!userId) {
         setLoading(false);
-        // No need to set an error here, the parent will handle the loading state.
         return;
       }
       
@@ -44,7 +43,7 @@ export function ProfileClient({ userId, isCurrentUser }: { userId: string, isCur
     }
 
     fetchUser();
-  }, [userId]); // IMPORTANT: This dependency array ensures the effect re-runs when userId is available.
+  }, [userId]);
 
   if (loading) {
     return <ProfileSkeleton />;
@@ -94,8 +93,10 @@ export function ProfileClient({ userId, isCurrentUser }: { userId: string, isCur
                     </Link>
                   </Button>
                 ) : (
-                  <Button className="flex-1">
-                    <MessageSquare className="mr-2 h-4 w-4" /> Message
+                  <Button asChild className="flex-1">
+                    <Link href={`/messages?userId=${user.id}`}>
+                      <MessageSquare className="mr-2 h-4 w-4" /> Message
+                    </Link>
                   </Button>
                 )}
               </div>

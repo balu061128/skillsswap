@@ -7,6 +7,7 @@ export type User = {
   skillsToLearn: string[];
   rating: number;
   reviews: number;
+  lastMessage?: string;
 };
 
 export type Skill = {
