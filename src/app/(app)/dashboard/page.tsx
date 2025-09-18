@@ -26,44 +26,44 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Your Skills</CardDescription>
-            <CardTitle className="text-4xl">12</CardTitle>
+            <CardTitle className="text-4xl">0</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xs text-muted-foreground">
-              +2 from last month
+              Add skills in your profile.
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Sessions Completed</CardDescription>
-            <CardTitle className="text-4xl">8</CardTitle>
+            <CardTitle className="text-4xl">0</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xs text-muted-foreground">
-              +30% from last month
+              No sessions completed yet.
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>New Matches</CardDescription>
-            <CardTitle className="text-4xl">5</CardTitle>
+            <CardTitle className="text-4xl">0</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xs text-muted-foreground">
-              You have 5 new potential partners.
+              Find partners in Skill Matching.
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Avg. Rating</CardDescription>
-            <CardTitle className="text-4xl">4.8</CardTitle>
+            <CardTitle className="text-4xl">N/A</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xs text-muted-foreground">
-              Based on your last 5 sessions.
+              No ratings yet.
             </div>
           </CardContent>
         </Card>
@@ -76,28 +76,7 @@ export default function DashboardPage() {
             <CardDescription>Your next learning and teaching sessions.</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">
-            <div className="flex items-center gap-4">
-              <Avatar className="hidden h-9 w-9 sm:flex">
-                <AvatarImage src="https://picsum.photos/seed/user1/40/40" alt="Avatar" data-ai-hint="person face" />
-                <AvatarFallback>OM</AvatarFallback>
-              </Avatar>
-              <div className="grid gap-1">
-                <p className="text-sm font-medium leading-none">Learning: Advanced React Hooks</p>
-                <p className="text-sm text-muted-foreground">with Olivia Martin</p>
-              </div>
-              <div className="ml-auto font-medium">Tomorrow, 2 PM</div>
-            </div>
-            <div className="flex items-center gap-4">
-              <Avatar className="hidden h-9 w-9 sm:flex">
-                <AvatarImage src="https://picsum.photos/seed/user2/40/40" alt="Avatar" data-ai-hint="woman smiling"/>
-                <AvatarFallback>JL</AvatarFallback>
-              </Avatar>
-              <div className="grid gap-1">
-                <p className="text-sm font-medium leading-none">Teaching: Intro to Figma</p>
-                <p className="text-sm text-muted-foreground">with Jackson Lee</p>
-              </div>
-              <div className="ml-auto font-medium">Oct 25, 4 PM</div>
-            </div>
+            <p className="text-sm text-muted-foreground">No upcoming sessions. Go to the <Link href="/schedule" className="underline">Schedule</Link> page to add one.</p>
           </CardContent>
         </Card>
 
@@ -113,7 +92,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="grid gap-1">
                     <p className="text-sm font-medium">New Matches Found</p>
-                    <p className="text-sm text-muted-foreground">We found 3 new partners for "Python".</p>
+                    <p className="text-sm text-muted-foreground">Find partners for your skills.</p>
                 </div>
                 <Button asChild size="sm" className="ml-auto gap-1">
                     <Link href="/matching">View<ArrowUpRight className="h-4 w-4" /></Link>
@@ -124,8 +103,8 @@ export default function DashboardPage() {
                     <Lightbulb className="h-6 w-6 text-muted-foreground"/>
                 </div>
                 <div className="grid gap-1">
-                    <p className="text-sm font-medium">Content for "Data Science"</p>
-                    <p className="text-sm text-muted-foreground">New articles and courses available.</p>
+                    <p className="text-sm font-medium">Content Recommendations</p>
+                    <p className="text-sm text-muted-foreground">Explore AI-curated content.</p>
                 </div>
                 <Button asChild size="sm" className="ml-auto gap-1">
                     <Link href="/recommendations">Explore<ArrowUpRight className="h-4 w-4" /></Link>
@@ -140,13 +119,10 @@ export default function DashboardPage() {
               <CardDescription>An overview of your current skill set.</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-2">
-            <Badge variant="secondary">React</Badge>
-            <Badge variant="secondary">TypeScript</Badge>
-            <Badge variant="secondary">Node.js</Badge>
-            <Badge variant="secondary">Figma</Badge>
-            <Badge variant="secondary">Python</Badge>
-            <Badge variant="secondary">Data Science</Badge>
-            <Badge variant="default">+ Add Skill</Badge>
+            <p className="text-sm text-muted-foreground">No skills added yet. Go to <Link href="/settings" className="underline">Settings</Link> to add your skills.</p>
+            <Button asChild size="sm" variant="default" className="mt-2">
+                <Link href="/settings">+ Add Skill</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>

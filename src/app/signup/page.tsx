@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +18,7 @@ import { Logo } from "@/components/shared/Logo";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { createUser } from "@/services/user";
-import { Loader2 } from "lucide-react";
+import { Loader2, Upload } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -26,10 +27,15 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSignup = async () => {
     setLoading(true);
     try {
+      // In a real app, you would upload the file to a storage service (like Firebase Storage)
+      // and get a URL to pass to the createUser function.
+      // For now, we are just demonstrating the UI.
       await createUser(email, password, name);
       toast({
         title: "Account Created!",
@@ -45,6 +51,13 @@ export default function SignupPage() {
       });
     }
     setLoading(false);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setFileName(file.name);
+    }
   };
 
   return (
@@ -94,6 +107,33 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
               />
+            </div>
+            <div className="grid gap-2">
+                <Label>Profile Picture (Optional)</Label>
+                 <div className="flex items-center gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={loading}
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Choose File
+                  </Button>
+                  <Input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={handleFileChange}
+                    accept="image/png, image/jpeg, image/gif"
+                  />
+                  {fileName ? (
+                    <span className="text-sm text-muted-foreground truncate">{fileName}</span>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">No file selected</span>
+                  )}
+                </div>
+                 <p className="text-xs text-muted-foreground">File upload is for demonstration only.</p>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">

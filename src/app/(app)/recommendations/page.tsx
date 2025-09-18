@@ -1,3 +1,6 @@
+
+"use client";
+
 import { RecommendationsClient } from "./_components/recommendations-client";
 import {
   Card,
@@ -5,13 +8,52 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Lightbulb } from "lucide-react";
+import { Lightbulb, Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { useEffect, useState } from "react";
+import { getUserProfile } from "@/services/user";
+import type { User } from "@/lib/types";
 
 export default function RecommendationsPage() {
-  const currentUser = {
-    skills: ["React", "TypeScript", "Next.js"],
-    interests: ["3D Graphics", "Python", "Data Visualization"],
-  };
+  const { user: authUser, loading: authLoading } = useAuth();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!authUser) {
+      setLoading(false);
+      return;
+    }
+
+    async function fetchUser() {
+      const profile = await getUserProfile(authUser.uid);
+      if (profile) {
+        setCurrentUser(profile);
+      }
+      setLoading(false);
+    }
+    fetchUser();
+  }, [authUser, authLoading]);
+
+  if (loading || authLoading) {
+    return (
+       <div className="flex items-center justify-center py-12">
+           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground"/>
+       </div>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Profile Not Found</CardTitle>
+                <CardDescription>We couldn't load your profile. Please try again later.</CardDescription>
+            </CardHeader>
+        </Card>
+    );
+  }
 
   return (
     <div className="w-full">

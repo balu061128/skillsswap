@@ -6,12 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Wand2, BookOpen } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import type { User } from "@/lib/types";
+import Link from "next/link";
 
 interface RecommendationsClientProps {
-  currentUser: {
-    skills: string[];
-    interests: string[];
-  };
+  currentUser: User;
 }
 
 export function RecommendationsClient({ currentUser }: RecommendationsClientProps) {
@@ -26,8 +25,8 @@ export function RecommendationsClient({ currentUser }: RecommendationsClientProp
 
     try {
       const input = {
-        skills: currentUser.skills,
-        interests: currentUser.interests,
+        skills: currentUser.skillsToTeach,
+        interests: currentUser.skillsToLearn,
       };
 
       const response = await recommendContent(input);
@@ -48,13 +47,17 @@ export function RecommendationsClient({ currentUser }: RecommendationsClientProp
             <CardDescription>Our AI will use these skills and interests to find content for you.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-2">
-            <p className="text-sm font-medium">Your Skills: <span className="font-normal text-muted-foreground">{currentUser.skills.join(", ")}</span></p>
-            <p className="text-sm font-medium">Your Interests: <span className="font-normal text-muted-foreground">{currentUser.interests.join(", ")}</span></p>
+            <p className="text-sm font-medium">Your Skills:{' '}
+                <span className="font-normal text-muted-foreground">{currentUser.skillsToTeach.join(", ") || "No skills added yet."}</span>
+            </p>
+            <p className="text-sm font-medium">Your Interests:{' '}
+                <span className="font-normal text-muted-foreground">{currentUser.skillsToLearn.join(", ") || "No interests added yet."}</span>
+            </p>
         </CardContent>
       </Card>
       
       <div className="flex justify-center">
-        <Button size="lg" onClick={handleRecommend} disabled={loading}>
+        <Button size="lg" onClick={handleRecommend} disabled={loading || currentUser.skillsToLearn.length === 0}>
           {loading ? (
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
           ) : (
@@ -63,6 +66,12 @@ export function RecommendationsClient({ currentUser }: RecommendationsClientProp
           Generate Recommendations
         </Button>
       </div>
+       {currentUser.skillsToLearn.length === 0 && (
+         <p className="text-center text-sm text-muted-foreground -mt-4">
+            Please add skills you want to learn in your <Link href="/settings" className="underline">profile settings</Link> to get recommendations.
+        </p>
+       )}
+
 
       {error && (
         <Alert variant="destructive">

@@ -7,19 +7,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
+// This data would ideally come from a database of all skills users have offered to teach.
+// For now, we'll keep a small, representative list.
 const allSkills = [
     { name: "React", category: "Web Development", teachers: 45, learners: 120 },
     { name: "Python", category: "Programming", teachers: 89, learners: 250 },
     { name: "Figma", category: "Design", teachers: 62, learners: 95 },
     { name: "Project Management", category: "Business", teachers: 33, learners: 78 },
     { name: "Guitar", category: "Music", teachers: 50, learners: 150 },
-    { name: "Creative Writing", category: "Arts", teachers: 25, learners: 60 },
     { name: "Data Science", category: "Programming", teachers: 70, learners: 180 },
-    { name: "Public Speaking", category: "Communication", teachers: 40, learners: 110 },
     { name: "Next.js", category: "Web Development", teachers: 38, learners: 115 },
     { name: "Node.js", category: "Web Development", teachers: 55, learners: 160 },
-    { name: "Illustration", category: "Design", teachers: 30, learners: 70 },
-    { name: "Piano", category: "Music", teachers: 42, learners: 100 },
 ];
 
 export default function SkillsPage() {
@@ -37,7 +35,7 @@ export default function SkillsPage() {
     <div className="w-full space-y-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Skill Marketplace</h1>
-        <p className="text-muted-foreground">Browse all available skills to learn or teach.</p>
+        <p className="text-muted-foreground">Browse skills available on the platform.</p>
       </div>
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />

@@ -17,10 +17,8 @@ type Session = {
   date: Date;
 }
 
-const initialSessions: Session[] = [
-  { title: "Advanced React Hooks", with: "Olivia Martin", date: new Date(Date.now() + 86400000) },
-  { title: "Intro to Figma", with: "Jackson Lee", date: new Date(Date.now() + 86400000 * 3) }
-]
+// Start with an empty array of sessions
+const initialSessions: Session[] = []
 
 
 export default function SchedulePage() {
