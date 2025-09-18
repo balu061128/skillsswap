@@ -12,7 +12,7 @@ export async function createUser(email: string, password: string, name: string) 
 
     // Now, let's create a document in Firestore for this user
     await setDoc(doc(db, "users", user.uid), {
-      uid: user.uid,
+      id: user.uid,
       email: user.email,
       name: name,
       bio: `Hi, I'm ${name}. I'm new to Skill Collab and excited to learn and share skills!`,
@@ -41,7 +41,17 @@ export async function getUserProfile(uid: string): Promise<User | null> {
 
         if (userDoc.exists()) {
             // Explicitly cast to User type for type safety
-            return { id: userDoc.id, ...userDoc.data() } as User;
+            const userData = userDoc.data();
+            return {
+                id: userDoc.id,
+                name: userData.name || '',
+                avatarUrl: userData.avatarUrl || '',
+                bio: userData.bio || '',
+                skillsToTeach: userData.skillsToTeach || [],
+                skillsToLearn: userData.skillsToLearn || [],
+                rating: userData.rating || 0,
+                reviews: userData.reviews || 0,
+            };
         } else {
             console.warn(`No such document for uid: ${uid}`);
             return null;

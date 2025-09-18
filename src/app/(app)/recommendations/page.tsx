@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useState } from "react";
 import { getUserProfile } from "@/services/user";
 import type { User } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RecommendationsPage() {
   const { user: authUser, loading: authLoading } = useAuth();
@@ -38,8 +39,31 @@ export default function RecommendationsPage() {
 
   if (loading || authLoading) {
     return (
-       <div className="flex items-center justify-center py-12">
-           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground"/>
+       <div className="w-full space-y-8">
+          <Card className="mb-8">
+            <CardHeader>
+               <div className="flex items-center gap-4">
+                  <Lightbulb className="w-8 h-8"/>
+                  <div>
+                      <Skeleton className="h-7 w-48" />
+                      <Skeleton className="h-4 w-72 mt-2" />
+                  </div>
+              </div>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-4 w-64" />
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Skeleton className="h-5 w-1/2" />
+              <Skeleton className="h-5 w-1/2" />
+            </CardContent>
+          </Card>
+          <div className="flex justify-center">
+            <Skeleton className="h-12 w-64" />
+          </div>
        </div>
     );
   }

@@ -40,8 +40,16 @@ export default function MatchingPage() {
 
   if (loading || authLoading) {
     return (
-       <div className="flex items-center justify-center py-12">
-           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground"/>
+       <div className="w-full space-y-8">
+          <Card className="mb-8">
+            <CardHeader>
+              <Skeleton className="h-8 w-1/2" />
+              <Skeleton className="h-4 w-3/4 mt-2" />
+            </CardHeader>
+          </Card>
+          <div className="flex justify-center">
+            <Skeleton className="h-12 w-48" />
+          </div>
        </div>
     );
   }
