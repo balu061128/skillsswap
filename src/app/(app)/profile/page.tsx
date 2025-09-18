@@ -4,8 +4,8 @@
 import { useAuth } from "@/hooks/use-auth";
 import { ProfileClient } from "./_components/profile-client";
 import { useSearchParams } from "next/navigation";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function ProfilePage() {
     const searchParams = useSearchParams();
@@ -19,7 +19,6 @@ export default function ProfilePage() {
     const userId = userIdFromParams || currentUser?.uid;
     
     // Show a skeleton loader while authentication is in progress or if we don't have a userId yet.
-    // This is the key fix to prevent rendering with an undefined ID.
     if (loading || !userId) {
         return (
              <div className="container mx-auto p-4 md:p-6">

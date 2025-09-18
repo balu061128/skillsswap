@@ -19,10 +19,10 @@ export function ProfileClient({ userId, isCurrentUser }: { userId: string, isCur
 
   useEffect(() => {
     async function fetchUser() {
-      // This check ensures we never call the service with an undefined ID.
+      // This check ensures we never call the service with an undefined or null ID.
       if (!userId) {
-        setError("No user ID provided.");
         setLoading(false);
+        // No need to set an error here, the parent will handle the loading state.
         return;
       }
       
@@ -44,7 +44,7 @@ export function ProfileClient({ userId, isCurrentUser }: { userId: string, isCur
     }
 
     fetchUser();
-  }, [userId]);
+  }, [userId]); // IMPORTANT: This dependency array ensures the effect re-runs when userId is available.
 
   if (loading) {
     return <ProfileSkeleton />;
