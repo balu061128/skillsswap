@@ -213,7 +213,7 @@ export default function SettingsPage() {
                     <span className="text-sm text-muted-foreground">No file selected</span>
                   )}
                    <Button type="button" onClick={handleFileUpload} disabled={!selectedFile || isUploading}>
-                        {isUploading ? <Loader2 className="animate-spin mr-2" /> : null}
+                        {isUploading ? <Loader2 className="animate-spin mr-2" /> : <ImageIcon className="mr-2 h-4 w-4" />}
                         Upload
                     </Button>
                 </div>
