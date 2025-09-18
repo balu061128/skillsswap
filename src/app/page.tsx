@@ -15,7 +15,7 @@ export default function Home() {
           <Button variant="ghost" asChild>
             <Link href="/login">Login</Link>
           </Button>
-          <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
+          <Button asChild>
             <Link href="/signup">Get Started</Link>
           </Button>
         </nav>
@@ -34,7 +34,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Button size="lg" asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
+                  <Button size="lg" asChild>
                     <Link href="/signup">
                       Join the Community
                       <ArrowRight className="ml-2 h-4 w-4" />
