@@ -227,67 +227,67 @@ export default function SettingsPage() {
               </Button>
             </CardFooter>
           </Card>
+        
+          <Card>
+              <CardHeader>
+                <CardTitle>Profile Picture</CardTitle>
+                <CardDescription>Update your avatar. This is a separate action from saving your profile.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Choose File
+                  </Button>
+                  <Input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={handleFileChange}
+                    accept="image/png, image/jpeg, image/gif"
+                  />
+                  {selectedFile ? (
+                    <span className="text-sm text-muted-foreground">{selectedFile.name}</span>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">No file selected</span>
+                  )}
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button type="button" onClick={handleFileUpload} disabled={!selectedFile || isUploading}>
+                    {isUploading ? <Loader2 className="animate-spin mr-2" /> : <ImageIcon className="mr-2 h-4 w-4" />}
+                    Upload Picture
+                </Button>
+              </CardFooter>
+            </Card>
+              
+            <Card>
+              <CardHeader>
+                <CardTitle>Account</CardTitle>
+                <CardDescription>Manage your account settings.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="username">Username</Label>
+                  <Input id="username" placeholder="your_username" disabled />
+                  <FormDescription>Usernames cannot be changed yet.</FormDescription>
+                </div>
+                <Separator />
+                <div className="space-y-2">
+                  <Label>Password</Label>
+                  <Button variant="outline" disabled>
+                      <KeyRound className="mr-2 h-4 w-4" /> Change Password
+                  </Button>
+                  <FormDescription>Password management is not yet available.</FormDescription>
+                </div>
+              </CardContent>
+            </Card>
         </form>
       </Form>
-        
-      <Card>
-          <CardHeader>
-            <CardTitle>Profile Picture</CardTitle>
-            <CardDescription>Update your avatar. This is a separate action from saving your profile.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Upload className="mr-2 h-4 w-4" />
-                Choose File
-              </Button>
-              <Input
-                type="file"
-                ref={fileInputRef}
-                className="hidden"
-                onChange={handleFileChange}
-                accept="image/png, image/jpeg, image/gif"
-              />
-              {selectedFile ? (
-                <span className="text-sm text-muted-foreground">{selectedFile.name}</span>
-              ) : (
-                <span className="text-sm text-muted-foreground">No file selected</span>
-              )}
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button type="button" onClick={handleFileUpload} disabled={!selectedFile || isUploading}>
-                {isUploading ? <Loader2 className="animate-spin mr-2" /> : <ImageIcon className="mr-2 h-4 w-4" />}
-                Upload Picture
-            </Button>
-          </CardFooter>
-        </Card>
-          
-        <Card>
-          <CardHeader>
-            <CardTitle>Account</CardTitle>
-            <CardDescription>Manage your account settings.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input id="username" placeholder="your_username" disabled />
-              <FormDescription>Usernames cannot be changed yet.</FormDescription>
-            </div>
-            <Separator />
-            <div className="space-y-2">
-              <Label>Password</Label>
-              <Button variant="outline" disabled>
-                  <KeyRound className="mr-2 h-4 w-4" /> Change Password
-              </Button>
-              <FormDescription>Password management is not yet available.</FormDescription>
-            </div>
-          </CardContent>
-        </Card>
     </div>
   );
 }
