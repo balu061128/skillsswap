@@ -8,7 +8,7 @@ export function Logo({ className }: { className?: string }) {
         <ArrowRightLeft className="h-5 w-5" />
       </div>
       <span className="text-xl font-bold tracking-tight text-foreground font-headline">
-        Skill Swap
+        Skill Collab
       </span>
     </div>
   );

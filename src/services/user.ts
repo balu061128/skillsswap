@@ -15,7 +15,7 @@ export async function createUser(email: string, password: string, name: string) 
       uid: user.uid,
       email: user.email,
       name: name,
-      bio: `Hi, I'm ${name}. I'm new to Skill Swap and excited to learn and share skills!`,
+      bio: `Hi, I'm ${name}. I'm new to Skill Collab and excited to learn and share skills!`,
       avatarUrl: `https://picsum.photos/seed/${user.uid}/128/128`,
       skillsToTeach: [],
       skillsToLearn: [],

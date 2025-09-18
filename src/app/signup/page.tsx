@@ -33,7 +33,7 @@ export default function SignupPage() {
       await createUser(email, password, name);
       toast({
         title: "Account Created!",
-        description: "Welcome to Skill Swap.",
+        description: "Welcome to Skill Collab.",
       });
       router.push("/dashboard");
     } catch (error: any) {

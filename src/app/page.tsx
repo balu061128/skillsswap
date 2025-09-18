@@ -30,7 +30,7 @@ export default function Home() {
                     Unlock Your Potential, One Skill at a Time
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Skill Swap is the ultimate platform for collaborative learning. Connect with peers, share your expertise, and learn new skills in a supportive community.
+                    Skill Collab is the ultimate platform for collaborative learning. Connect with peers, share your expertise, and learn new skills in a supportive community.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -83,7 +83,7 @@ export default function Home() {
         </section>
       </main>
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs text-muted-foreground">&copy; 2024 Skill Swap. All rights reserved.</p>
+        <p className="text-xs text-muted-foreground">&copy; 2024 Skill Collab. All rights reserved.</p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
           <Link href="#" className="text-xs hover:underline underline-offset-4">
             Terms of Service
