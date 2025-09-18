@@ -9,59 +9,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
-import { useEffect, useState } from "react";
-import { getUserProfile } from "@/services/user";
-import type { User } from "@/lib/types";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default function MatchingPage() {
-  const { user: authUser, loading: authLoading } = useAuth();
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (authLoading) return;
-    if (!authUser) {
-      setLoading(false);
-      return;
-    }
-
-    async function fetchUser() {
-      setLoading(true);
-      const profile = await getUserProfile(authUser.uid);
-      if (profile) {
-        setCurrentUser(profile);
-      }
-      setLoading(false);
-    }
-    fetchUser();
-  }, [authUser, authLoading]);
-
-  if (loading || authLoading) {
-    return (
-       <div className="w-full space-y-8">
-          <Card className="mb-8">
-            <CardHeader>
-              <Skeleton className="h-8 w-1/2" />
-              <Skeleton className="h-4 w-3/4 mt-2" />
-            </CardHeader>
-          </Card>
-          <div className="flex justify-center">
-            <Skeleton className="h-12 w-48" />
-          </div>
-       </div>
-    );
-  }
-
+  const { currentUser } = useAuth();
+  
   if (!currentUser) {
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Profile Not Found</CardTitle>
-                <CardDescription>We couldn't load your profile. Please add your skills and interests in Settings to use this feature.</CardDescription>
-            </CardHeader>
-        </Card>
-    );
+     // This should technically be handled by the main layout's loader,
+     // but it's good practice to have a fallback.
+    return null;
   }
 
   return (

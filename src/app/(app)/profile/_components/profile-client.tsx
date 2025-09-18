@@ -13,15 +13,26 @@ import { getUserProfile } from "@/services/user";
 import type { User } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function ProfileClient({ userId, isCurrentUser }: { userId: string, isCurrentUser: boolean }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+interface ProfileClientProps {
+  user?: User; // The user can be passed as a prop
+  userId?: string; // Or it can be fetched via ID
+  isCurrentUser: boolean;
+}
+
+
+export function ProfileClient({ user: initialUser, userId, isCurrentUser }: ProfileClientProps) {
+  const [user, setUser] = useState<User | null>(initialUser || null);
+  const [loading, setLoading] = useState(!initialUser); // Only load if the user isn't passed directly
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchUser() {
+      // If the user object is already provided, no need to fetch.
+      if (initialUser) return;
+      
       if (!userId) {
         setLoading(false);
+        setError("No user specified.");
         return;
       }
       
@@ -43,7 +54,7 @@ export function ProfileClient({ userId, isCurrentUser }: { userId: string, isCur
     }
 
     fetchUser();
-  }, [userId]);
+  }, [userId, initialUser]);
 
   if (loading) {
     return <ProfileSkeleton />;

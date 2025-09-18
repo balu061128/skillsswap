@@ -49,7 +49,7 @@ const navLinks = [
 
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
-  const { user, loading, signOut } = useAuth();
+  const { user, currentUser, loading, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,7 +60,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
     }
   }, [loading, user, router]);
 
-  if (loading || !user) {
+  if (loading || !user || !currentUser) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -180,8 +180,8 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
                 <Avatar>
-                  <AvatarImage src={user.photoURL || "https://picsum.photos/seed/user-avatar/40/40" } alt="User" data-ai-hint="person" />
-                  <AvatarFallback>{user.displayName?.charAt(0) ?? 'U'}</AvatarFallback>
+                  <AvatarImage src={currentUser.avatarUrl || "https://picsum.photos/seed/user-avatar/40/40" } alt="User" data-ai-hint="person" />
+                  <AvatarFallback>{currentUser.name?.charAt(0) ?? 'U'}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>

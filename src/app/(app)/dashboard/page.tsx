@@ -1,10 +1,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { getUserProfile } from "@/services/user";
-import type { User } from "@/lib/types";
 import {
   Card,
   CardContent,
@@ -19,26 +16,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 
 export default function DashboardPage() {
-  const { user: authUser } = useAuth();
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchUser() {
-      if (authUser) {
-        const profile = await getUserProfile(authUser.uid);
-        if (profile) {
-          setCurrentUser(profile);
-        }
-        setLoading(false);
-      }
-    }
-    fetchUser();
-  }, [authUser]);
+  const { currentUser, loading } = useAuth();
 
   const skillsCount = currentUser?.skillsToTeach?.length ?? 0;
 
-  if (loading) {
+  if (loading || !currentUser) {
     return <DashboardSkeleton />;
   }
 
