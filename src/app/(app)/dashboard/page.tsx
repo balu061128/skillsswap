@@ -16,6 +16,7 @@ import Link from "next/link";
 import { ArrowUpRight, Lightbulb, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 
 export default function DashboardPage() {
   const { user: authUser } = useAuth();
