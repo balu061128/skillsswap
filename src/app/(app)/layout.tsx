@@ -60,7 +60,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
     }
   }, [loading, user, router]);
 
-  if (loading || !user || !currentUser) {
+  if (loading || !user) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -80,6 +80,15 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
       // router.push(`/search?q=${searchQuery}`);
     }
   };
+
+  if (!currentUser) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+        <p className="ml-2">Fetching user profile...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
