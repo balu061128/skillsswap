@@ -36,6 +36,8 @@ import { Logo } from "@/components/shared/Logo";
 import { useAuth, AuthProvider } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { User } from "@/lib/types";
+
 
 const navLinks = [
   { href: "/dashboard", icon: Home, label: "Dashboard" },
@@ -47,26 +49,34 @@ const navLinks = [
   { href: "/messages", icon: MessageSquare, label: "Messages" },
 ];
 
+const mockUser: User = {
+    id: "mock-user-123",
+    name: "Alex Doe",
+    avatarUrl: "https://picsum.photos/seed/alex-doe/40/40",
+    bio: "Enthusiastic learner and passionate teacher of web technologies. Let's connect and grow together!",
+    skillsToTeach: ["React", "TypeScript", "Node.js"],
+    skillsToLearn: ["Python", "Data Science", "Figma"],
+    rating: 4.8,
+    reviews: 23,
+};
+
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
-  const { user, currentUser, loading, signOut } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Use the mock user for consistent display
+  const currentUser = mockUser;
+
   useEffect(() => {
+    // This effect can still run to redirect non-logged-in users in a real scenario
     if (!loading && !user) {
-      router.push('/login');
+      // router.push('/login');
+      console.log("Not logged in, but showing mock data for now.");
     }
   }, [loading, user, router]);
-
-  if (loading || !user) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
 
   const handleLogout = async () => {
     await signOut();
@@ -75,17 +85,15 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchQuery) {
-      // In a real app, you would navigate to a search results page
       console.log('Searching for:', searchQuery);
-      // router.push(`/search?q=${searchQuery}`);
     }
   };
-
-  if (!currentUser) {
+  
+  // Show a loader only based on the initial auth check
+  if (loading) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
-        <p className="ml-2">Fetching user profile...</p>
       </div>
     );
   }
@@ -189,7 +197,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
                 <Avatar>
-                  <AvatarImage src={currentUser.avatarUrl || "https://picsum.photos/seed/user-avatar/40/40" } alt="User" data-ai-hint="person" />
+                  <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} data-ai-hint="person" />
                   <AvatarFallback>{currentUser.name?.charAt(0) ?? 'U'}</AvatarFallback>
                 </Avatar>
               </Button>

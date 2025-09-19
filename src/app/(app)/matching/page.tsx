@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { MatchingClient } from "./_components/matching-client";
@@ -8,16 +9,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useAuth } from "@/hooks/use-auth";
+import type { User } from "@/lib/types";
+
+const mockUser: User = {
+    id: "mock-user-123",
+    name: "Alex Doe",
+    avatarUrl: "https://picsum.photos/seed/alex-doe/128/128",
+    bio: "Enthusiastic learner and passionate teacher of web technologies. Let's connect and grow together!",
+    skillsToTeach: ["React", "TypeScript", "Node.js"],
+    skillsToLearn: ["Python", "Data Science", "Figma"],
+    rating: 4.8,
+    reviews: 23,
+};
+
 
 export default function MatchingPage() {
-  const { currentUser } = useAuth();
-  
-  if (!currentUser) {
-     // This should technically be handled by the main layout's loader,
-     // but it's good practice to have a fallback.
-    return null;
-  }
+  const currentUser = mockUser;
 
   return (
     <div className="w-full">

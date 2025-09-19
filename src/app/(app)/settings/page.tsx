@@ -27,8 +27,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useAuth } from "@/hooks/use-auth";
-import { getUserProfile, updateUserProfile, uploadProfilePicture } from "@/services/user";
 import { Loader2, Upload, KeyRound, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -44,10 +42,20 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
+const mockUser: User = {
+    id: "mock-user-123",
+    name: "Alex Doe",
+    avatarUrl: "https://picsum.photos/seed/alex-doe/128/128",
+    bio: "Enthusiastic learner and passionate teacher of web technologies. Let's connect and grow together!",
+    skillsToTeach: ["React", "TypeScript", "Node.js"],
+    skillsToLearn: ["Python", "Data Science", "Figma"],
+    rating: 4.8,
+    reviews: 23,
+};
+
+
 export default function SettingsPage() {
-  const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
-  const [isFormLoading, setIsFormLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -56,63 +64,21 @@ export default function SettingsPage() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      name: "",
-      bio: "",
-      skillsToTeach: "",
-      skillsToLearn: "",
+      name: mockUser.name,
+      bio: mockUser.bio,
+      skillsToTeach: mockUser.skillsToTeach.join(", "),
+      skillsToLearn: mockUser.skillsToLearn.join(", "),
     },
   });
   
-  useEffect(() => {
-    if (user) {
-      setIsFormLoading(true);
-      getUserProfile(user.uid).then((profile) => {
-        if (profile) {
-          form.reset({
-            name: profile.name || "",
-            bio: profile.bio || "",
-            skillsToTeach: (profile.skillsToTeach || []).join(", "),
-            skillsToLearn: (profile.skillsToLearn || []).join(", "),
-          });
-        }
-        setIsFormLoading(false);
-      });
-    } else if (!authLoading) {
-      setIsFormLoading(false);
-    }
-  }, [user, authLoading, form]);
-
 
   async function onSubmit(data: ProfileFormValues) {
-    if (!user) {
-      toast({ title: "Error", description: "You must be logged in to update your profile.", variant: "destructive" });
-      return;
-    }
-
-    try {
-      const skillsToTeach = data.skillsToTeach?.split(',').map(s => s.trim()).filter(Boolean) || [];
-      const skillsToLearn = data.skillsToLearn?.split(',').map(s => s.trim()).filter(Boolean) || [];
-
-      const userData: Partial<User> = {
-          name: data.name,
-          bio: data.bio,
-          skillsToTeach,
-          skillsToLearn
-      };
-
-      await updateUserProfile(user.uid, userData);
-
-      toast({
-        title: "Profile Updated",
-        description: "Your profile text fields have been successfully updated.",
-      });
-    } catch (error) {
-      toast({
-        title: "Update Failed",
-        description: "Could not update your profile. Please try again.",
-        variant: "destructive",
-      });
-    }
+    // In a real app, this would call updateUserProfile
+    console.log("Saving data:", data);
+    toast({
+      title: "Profile Updated (Mock)",
+      description: "Your profile information has been saved.",
+    });
   }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,31 +89,18 @@ export default function SettingsPage() {
   };
   
   const handleFileUpload = async () => {
-    if (!selectedFile || !user) return;
-
+    if (!selectedFile) return;
     setIsUploading(true);
-    try {
-        await uploadProfilePicture(user.uid, selectedFile);
+    // In a real app, this would call uploadProfilePicture
+    console.log("Uploading file:", selectedFile.name);
+    setTimeout(() => {
         toast({
-            title: "Success!",
+            title: "Success! (Mock)",
             description: "Your profile picture has been updated.",
         });
-        // Force a page reload to show the new avatar in the header
-        window.location.reload(); 
-    } catch (error) {
-        toast({
-            title: "Upload Failed",
-            description: "Could not upload your picture. Please try again.",
-            variant: "destructive",
-        });
-    } finally {
         setIsUploading(false);
-    }
+    }, 1500);
   };
-
-  if (authLoading || isFormLoading) {
-    return <SettingsSkeleton />;
-  }
 
   return (
     <div className="w-full grid gap-8">
@@ -221,7 +174,7 @@ export default function SettingsPage() {
               />
             </CardContent>
             <CardFooter>
-              <Button type="submit" disabled={form.formState.isSubmitting || isFormLoading}>
+              <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? <Loader2 className="animate-spin mr-2" /> : null}
                 Save Changes
               </Button>

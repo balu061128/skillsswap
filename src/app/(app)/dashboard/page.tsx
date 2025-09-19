@@ -14,13 +14,28 @@ import { ArrowUpRight, Lightbulb, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import type { User } from "@/lib/types";
+
+const mockUser: User = {
+    id: "mock-user-123",
+    name: "Alex Doe",
+    avatarUrl: "https://picsum.photos/seed/alex-doe/128/128",
+    bio: "Enthusiastic learner and passionate teacher of web technologies. Let's connect and grow together!",
+    skillsToTeach: ["React", "TypeScript", "Node.js"],
+    skillsToLearn: ["Python", "Data Science", "Figma"],
+    rating: 4.8,
+    reviews: 23,
+};
+
 
 export default function DashboardPage() {
-  const { currentUser, loading } = useAuth();
+  const { loading } = useAuth();
+  // We'll use the mockUser for now to ensure the UI is always populated.
+  const currentUser = mockUser; 
 
   const skillsCount = currentUser?.skillsToTeach?.length ?? 0;
 
-  if (loading || !currentUser) {
+  if (loading) {
     return <DashboardSkeleton />;
   }
 
@@ -41,18 +56,18 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Sessions Completed</CardDescription>
-            <CardTitle className="text-4xl">0</CardTitle>
+            <CardTitle className="text-4xl">12</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xs text-muted-foreground">
-              No sessions completed yet.
+              +5 this month
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>New Matches</CardDescription>
-            <CardTitle className="text-4xl">0</CardTitle>
+            <CardTitle className="text-4xl">3</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xs text-muted-foreground">
@@ -63,11 +78,11 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Avg. Rating</CardDescription>
-            <CardTitle className="text-4xl">N/A</CardTitle>
+            <CardTitle className="text-4xl">4.8</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xs text-muted-foreground">
-              No ratings yet.
+              Based on 23 reviews.
             </div>
           </CardContent>
         </Card>
