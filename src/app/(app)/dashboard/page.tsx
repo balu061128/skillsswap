@@ -14,28 +14,13 @@ import { ArrowUpRight, Lightbulb, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import type { User } from "@/lib/types";
-
-const mockUser: User = {
-    id: "mock-user-123",
-    name: "Alex Doe",
-    avatarUrl: "https://picsum.photos/seed/alex-doe/128/128",
-    bio: "Enthusiastic learner and passionate teacher of web technologies. Let's connect and grow together!",
-    skillsToTeach: ["React", "TypeScript", "Node.js"],
-    skillsToLearn: ["Python", "Data Science", "Figma"],
-    rating: 4.8,
-    reviews: 23,
-};
-
 
 export default function DashboardPage() {
-  const { loading } = useAuth();
-  // We'll use the mockUser for now to ensure the UI is always populated.
-  const currentUser = mockUser; 
+  const { currentUser, loading } = useAuth();
 
   const skillsCount = currentUser?.skillsToTeach?.length ?? 0;
 
-  if (loading) {
+  if (loading || !currentUser) {
     return <DashboardSkeleton />;
   }
 
@@ -78,11 +63,11 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Avg. Rating</CardDescription>
-            <CardTitle className="text-4xl">4.8</CardTitle>
+            <CardTitle className="text-4xl">{currentUser.rating.toFixed(1)}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xs text-muted-foreground">
-              Based on 23 reviews.
+              Based on {currentUser.reviews} reviews.
             </div>
           </CardContent>
         </Card>

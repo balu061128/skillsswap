@@ -13,8 +13,6 @@ interface AuthContextType {
   signOut: () => Promise<void>;
 }
 
-// In a real app, currentUser would be null initially. 
-// For this mock-data version, we can provide a default value or handle it in components.
 const AuthContext = createContext<AuthContextType>({ user: null, currentUser: null, loading: true, signOut: async () => {} });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -27,9 +25,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       if (user) {
         setUser(user);
-        // In a real app, we'd fetch the profile. Here, we'll skip it to use mock data in components.
-        // const profile = await getUserProfile(user.uid);
-        // setCurrentUser(profile);
+        const profile = await getUserProfile(user.uid);
+        setCurrentUser(profile);
       } else {
         setUser(null);
         setCurrentUser(null);

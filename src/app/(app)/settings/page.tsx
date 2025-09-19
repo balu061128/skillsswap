@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -32,6 +31,10 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { User } from "@/lib/types";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/hooks/use-auth";
+import { updateUserProfile, uploadProfilePicture } from "@/services/user";
+import { useRouter } from "next/navigation";
+
 
 const profileFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -42,20 +45,11 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-const mockUser: User = {
-    id: "mock-user-123",
-    name: "Alex Doe",
-    avatarUrl: "https://picsum.photos/seed/alex-doe/128/128",
-    bio: "Enthusiastic learner and passionate teacher of web technologies. Let's connect and grow together!",
-    skillsToTeach: ["React", "TypeScript", "Node.js"],
-    skillsToLearn: ["Python", "Data Science", "Figma"],
-    rating: 4.8,
-    reviews: 23,
-};
-
 
 export default function SettingsPage() {
+  const { currentUser, user, loading } = useAuth();
   const { toast } = useToast();
+  const router = useRouter();
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -63,22 +57,43 @@ export default function SettingsPage() {
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues: {
-      name: mockUser.name,
-      bio: mockUser.bio,
-      skillsToTeach: mockUser.skillsToTeach.join(", "),
-      skillsToLearn: mockUser.skillsToLearn.join(", "),
-    },
+    // Populate form with current user data when it loads
+    values: {
+      name: currentUser?.name || "",
+      bio: currentUser?.bio || "",
+      skillsToTeach: currentUser?.skillsToTeach?.join(", ") || "",
+      skillsToLearn: currentUser?.skillsToLearn?.join(", ") || "",
+    }
   });
   
 
   async function onSubmit(data: ProfileFormValues) {
-    // In a real app, this would call updateUserProfile
-    console.log("Saving data:", data);
-    toast({
-      title: "Profile Updated (Mock)",
-      description: "Your profile information has been saved.",
-    });
+    if (!user) return;
+
+    // Convert comma-separated strings to arrays
+    const skillsToTeach = data.skillsToTeach?.split(',').map(s => s.trim()).filter(s => s) || [];
+    const skillsToLearn = data.skillsToLearn?.split(',').map(s => s.trim()).filter(s => s) || [];
+
+    try {
+      await updateUserProfile(user.uid, {
+        name: data.name,
+        bio: data.bio,
+        skillsToTeach,
+        skillsToLearn,
+      });
+      toast({
+        title: "Profile Updated",
+        description: "Your profile information has been saved.",
+      });
+      // Optional: force a refresh to show updated data if context doesn't auto-update
+      router.refresh(); 
+    } catch (error) {
+       toast({
+        title: "Update Failed",
+        description: "Could not save your profile. Please try again.",
+        variant: "destructive"
+      });
+    }
   }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,18 +104,33 @@ export default function SettingsPage() {
   };
   
   const handleFileUpload = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile || !user) return;
     setIsUploading(true);
-    // In a real app, this would call uploadProfilePicture
-    console.log("Uploading file:", selectedFile.name);
-    setTimeout(() => {
-        toast({
-            title: "Success! (Mock)",
-            description: "Your profile picture has been updated.",
+
+    try {
+      await uploadProfilePicture(user.uid, selectedFile);
+      toast({
+          title: "Success!",
+          description: "Your profile picture has been updated.",
+      });
+      setSelectedFile(null);
+      // Force a refresh to show the new picture
+      router.refresh();
+    } catch(e) {
+         toast({
+            title: "Upload Failed",
+            description: "Could not upload your picture. Please try again.",
+            variant: "destructive"
         });
-        setIsUploading(false);
-    }, 1500);
+    } finally {
+      setIsUploading(false);
+    }
   };
+  
+  if (loading || !currentUser) {
+    return <SettingsSkeleton />;
+  }
+
 
   return (
     <div className="w-full grid gap-8">
@@ -226,7 +256,7 @@ export default function SettingsPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="username">Username</Label>
-                  <Input id="username" placeholder="your_username" disabled />
+                  <Input id="username" placeholder={user?.email || "your_username"} disabled />
                   <FormDescription>Usernames cannot be changed yet.</FormDescription>
                 </div>
                 <Separator />
@@ -247,36 +277,48 @@ export default function SettingsPage() {
 
 function SettingsSkeleton() {
   return (
-    <Card>
-      <CardHeader>
-        <Skeleton className="h-7 w-32" />
-        <Skeleton className="h-4 w-64" />
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-16" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-16" />
-          <Skeleton className="h-20 w-full" />
-        </div>
-         <div className="space-y-2">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-         <div className="space-y-2">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Skeleton className="h-10 w-32" />
-      </CardFooter>
-    </Card>
+     <div className="w-full grid gap-8">
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-7 w-32" />
+          <Skeleton className="h-4 w-64" />
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-20 w-full" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Skeleton className="h-10 w-32" />
+        </CardFooter>
+      </Card>
+        <Card>
+        <CardHeader>
+          <Skeleton className="h-7 w-32" />
+          <Skeleton className="h-4 w-64" />
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Skeleton className="h-10 w-40" />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Skeleton className="h-10 w-32" />
+        </CardFooter>
+      </Card>
+    </div>
   )
 }

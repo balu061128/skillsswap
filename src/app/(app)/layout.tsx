@@ -36,7 +36,6 @@ import { Logo } from "@/components/shared/Logo";
 import { useAuth, AuthProvider } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { User } from "@/lib/types";
 
 
 const navLinks = [
@@ -49,32 +48,17 @@ const navLinks = [
   { href: "/messages", icon: MessageSquare, label: "Messages" },
 ];
 
-const mockUser: User = {
-    id: "mock-user-123",
-    name: "Alex Doe",
-    avatarUrl: "https://picsum.photos/seed/alex-doe/40/40",
-    bio: "Enthusiastic learner and passionate teacher of web technologies. Let's connect and grow together!",
-    skillsToTeach: ["React", "TypeScript", "Node.js"],
-    skillsToLearn: ["Python", "Data Science", "Figma"],
-    rating: 4.8,
-    reviews: 23,
-};
-
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
-  const { user, loading, signOut } = useAuth();
+  const { user, currentUser, loading, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Use the mock user for consistent display
-  const currentUser = mockUser;
 
   useEffect(() => {
-    // This effect can still run to redirect non-logged-in users in a real scenario
     if (!loading && !user) {
-      // router.push('/login');
-      console.log("Not logged in, but showing mock data for now.");
+       router.push('/login');
     }
   }, [loading, user, router]);
 
@@ -89,8 +73,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
     }
   };
   
-  // Show a loader only based on the initial auth check
-  if (loading) {
+  if (loading || !user || !currentUser) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />

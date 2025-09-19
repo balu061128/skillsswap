@@ -9,22 +9,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { User } from "@/lib/types";
-
-const mockUser: User = {
-    id: "mock-user-123",
-    name: "Alex Doe",
-    avatarUrl: "https://picsum.photos/seed/alex-doe/128/128",
-    bio: "Enthusiastic learner and passionate teacher of web technologies. Let's connect and grow together!",
-    skillsToTeach: ["React", "TypeScript", "Node.js"],
-    skillsToLearn: ["Python", "Data Science", "Figma"],
-    rating: 4.8,
-    reviews: 23,
-};
-
+import { useAuth } from "@/hooks/use-auth";
+import { Loader2 } from "lucide-react";
 
 export default function MatchingPage() {
-  const currentUser = mockUser;
+  const { currentUser, loading } = useAuth();
+
+  if (loading || !currentUser) {
+    return <div className="flex h-full w-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>;
+  }
 
   return (
     <div className="w-full">

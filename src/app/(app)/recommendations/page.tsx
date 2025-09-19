@@ -10,22 +10,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Lightbulb } from "lucide-react";
-import type { User } from "@/lib/types";
+import { useAuth } from "@/hooks/use-auth";
+import { Loader2 } from "lucide-react";
 
-
-const mockUser: User = {
-    id: "mock-user-123",
-    name: "Alex Doe",
-    avatarUrl: "https://picsum.photos/seed/alex-doe/128/128",
-    bio: "Enthusiastic learner and passionate teacher of web technologies. Let's connect and grow together!",
-    skillsToTeach: ["React", "TypeScript", "Node.js"],
-    skillsToLearn: ["Python", "Data Science", "Figma"],
-    rating: 4.8,
-    reviews: 23,
-};
 
 export default function RecommendationsPage() {
-  const currentUser = mockUser;
+  const { currentUser, loading } = useAuth();
+
+  if (loading || !currentUser) {
+    return <div className="flex h-full w-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>;
+  }
 
   return (
     <div className="w-full">
