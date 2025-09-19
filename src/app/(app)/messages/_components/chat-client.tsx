@@ -9,53 +9,18 @@ import { Search, Send, Video, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 import type { User } from "@/lib/types";
+import { MessageSquare } from "lucide-react";
 
-// Mock data, in a real app this would come from a service
-const conversations: User[] = [
-    {
-        id: "user2",
-        name: "Ada Lovelace",
-        avatarUrl: "https://picsum.photos/seed/user2/80/80",
-        lastMessage: "Sounds good! I'll send over the documentation.",
-        bio: "", skillsToTeach: [], skillsToLearn: [], rating: 0, reviews: 0
-    },
-    {
-        id: "user3",
-        name: "Grace Hopper",
-        avatarUrl: "https://picsum.photos/seed/user3/80/80",
-        lastMessage: "Can you help me with debugging this COBOL code?",
-        bio: "", skillsToTeach: [], skillsToLearn: [], rating: 0, reviews: 0
-    },
-    {
-        id: "user4",
-        name: "Alan Turing",
-        avatarUrl: "https://picsum.photos/seed/user4/80/80",
-        lastMessage: "The enigma machine is fascinating, let's discuss.",
-        bio: "", skillsToTeach: [], skillsToLearn: [], rating: 0, reviews: 0
-    }
-]
 
-const messagesMock = {
-    user2: [
-        { id: 'm1', sender: 'user2', text: 'Hey! How are you doing? I saw you are interested in Python.' },
-        { id: 'm2', sender: 'currentUser', text: 'Hi Ada! I am doing great. Yes, I am looking to get started with it.' },
-        { id: 'm3', sender: 'user2', text: 'Awesome! I can help you with that. I have some good resources to share.' },
-        { id: 'm4', sender: 'user2', text: "Sounds good! I'll send over the documentation." },
-    ],
-    user3: [
-        { id: 'm5', sender: 'user3', text: 'Can you help me with debugging this COBOL code?' },
-    ],
-    user4: [
-       { id: 'm6', sender: 'user4', text: "The enigma machine is fascinating, let's discuss." },
-    ]
-}
+const conversations: User[] = []
+const messagesMock: any = {}
 
 
 export function ChatClient() {
   const { user: currentUser } = useAuth();
-  const [selectedUser, setSelectedUser] = useState<User>(conversations[0]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState(messagesMock[selectedUser.id as keyof typeof messagesMock] || []);
+  const [messages, setMessages] = useState([]);
 
   const handleSelectUser = (user: User) => {
     setSelectedUser(user);
@@ -64,7 +29,8 @@ export function ChatClient() {
 
   const handleSendMessage = () => {
     if (message.trim() && currentUser) {
-        const newMessage = { id: `m${Date.now()}`, sender: 'currentUser', text: message };
+        // In a real app, this would call a server action to save the message
+        const newMessage: any = { id: `m${Date.now()}`, sender: 'currentUser', text: message };
         setMessages(prev => [...prev, newMessage]);
         setMessage("");
     }
@@ -82,27 +48,33 @@ export function ChatClient() {
             </div>
         </div>
         <div className="flex-1 overflow-auto">
-          <nav className="p-2 space-y-1">
-            {conversations.map((user) => (
-              <button
-                key={user.id}
-                onClick={() => handleSelectUser(user)}
-                className={cn(
-                  "w-full text-left flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted",
-                  selectedUser.id === user.id ? "bg-muted text-primary" : ""
-                )}
-              >
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person face" />
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1 truncate">
-                    <p className="font-semibold">{user.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{user.lastMessage}</p>
+            {conversations.length === 0 ? (
+                <div className="p-4 text-center text-sm text-muted-foreground">
+                    No conversations yet.
                 </div>
-              </button>
-            ))}
-          </nav>
+            ) : (
+                <nav className="p-2 space-y-1">
+                    {conversations.map((user) => (
+                    <button
+                        key={user.id}
+                        onClick={() => handleSelectUser(user)}
+                        className={cn(
+                        "w-full text-left flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted",
+                        selectedUser?.id === user.id ? "bg-muted text-primary" : ""
+                        )}
+                    >
+                        <Avatar className="h-10 w-10">
+                        <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person face" />
+                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 truncate">
+                            <p className="font-semibold">{user.name}</p>
+                            <p className="text-xs text-muted-foreground truncate">{user.lastMessage}</p>
+                        </div>
+                    </button>
+                    ))}
+                </nav>
+            )}
         </div>
       </div>
 
@@ -123,7 +95,7 @@ export function ChatClient() {
             </div>
 
             <div className="flex-1 p-4 overflow-y-auto space-y-4">
-              {messages.map((msg) => (
+              {messages.map((msg: any) => (
                   <div key={msg.id} className={cn("flex items-end gap-2", msg.sender === 'currentUser' ? "justify-end" : "justify-start")}>
                       {msg.sender !== 'currentUser' && <Avatar className="h-8 w-8"><AvatarImage src={selectedUser.avatarUrl} /></Avatar>}
                       <div className={cn("max-w-xs md:max-w-md lg:max-w-lg rounded-lg px-4 py-2", msg.sender === 'currentUser' ? "bg-primary text-primary-foreground" : "bg-muted")}>
