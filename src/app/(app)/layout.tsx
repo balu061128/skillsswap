@@ -30,6 +30,7 @@ import {
   Settings,
   LogOut,
   MessageSquare,
+  Terminal,
 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/shared/Logo";
@@ -46,6 +47,7 @@ const navLinks = [
   { href: "/recommendations", icon: Lightbulb, label: "Recommendations" },
   { href: "/schedule", icon: Calendar, label: "Schedule" },
   { href: "/messages", icon: MessageSquare, label: "Messages" },
+  { href: "/collab", icon: Terminal, label: "Code Collab" },
 ];
 
 
